@@ -1,0 +1,1 @@
+# homebridge plugin and webapp for smarthome(mijia)

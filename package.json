@@ -1,0 +1,26 @@
+{
+  "name": "homebridge-smarthome",
+  "version": "1.0.0",
+  "description": "this is a homebridge plugin for mijia eco-chain but also a management app provide web and restapi to manage your mijia eco-chain,you can control and monitor your accessory via apple's homekit or the webapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rench/homebridge-smarthome.git"
+  },
+  "keywords": [
+    "homebridge",
+    "homebridge-plugin",
+    "xiaomi",
+    "mijia",
+    "smarthome"
+  ],
+  "author": "Lo.Wang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rench/homebridge-smarthome/issues"
+  },
+  "homepage": "https://github.com/rench/homebridge-smarthome#readme"
+}
