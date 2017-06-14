@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/rench/homebridge-smarthome/issues"
   },
-  "homepage": "https://github.com/rench/homebridge-smarthome#readme"
+  "homepage": "https://github.com/rench/homebridge-smarthome#readme",
+  "dependencies": {
+    "express": "^4.15.3",
+    "winston": "^2.3.1"
+  }
 }

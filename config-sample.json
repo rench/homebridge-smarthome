@@ -1,0 +1,51 @@
+{
+  "bridge": {
+    "name": "Homebridge",
+    "username": "CC:22:3D:E3:CE:30",
+    "port": 51826,
+    "pin": "123-45-568"
+  },
+  "platforms": [
+    {
+      "platform": "smarthome",
+      "web": {
+        "port": 8888
+      },
+      "mijia": {
+        "sids": [
+          "6409802da3b3",
+          "f0b4299a5b2b",
+          "f0b4299a77dd"
+        ],
+        "passwords": [
+          "02i44k56zrgg578b",
+          "g250s2vtne8q9qhv",
+          "syu3oasva3uqd5qd"
+        ],
+        "devices": [
+          {
+            "sid":"VacuumCleanerSID01",
+            "name": "Vacuum Cleaner",
+            "ip": "IP_ADDRESS_OF_THE_ROBOT",
+            "token": "TOKEN_DISCOVERED_FROM_STEP_7",
+            "type":"wifi"
+          }
+        ]
+      },
+      "broadlink": {
+        "devices": [
+          {
+            "name": "MP1",
+            "type": "MP",
+            "mac": "CA:32:4F:77:D2:21"
+          },
+          {
+            "name": "SP2",
+            "type": "SP",
+            "ip": "192.168.1.92"
+          }
+        ]
+      }
+    }
+  ]
+}
