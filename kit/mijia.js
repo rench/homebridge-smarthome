@@ -26,10 +26,14 @@ class Mijia {
     this.gateways = {};
     this.accessories = {};
     this.devices = {};
+    //supported devices
+    this._devices = {};
     //init upd server
     this.initUpdSocket();
     //init config
     this.initConfig(config);
+    //init device parsers
+    this.loadDevices();
     if (api) {
       // Save the API object as plugin needs to register new accessory via this object.
       this.api = api;
@@ -76,7 +80,6 @@ class Mijia {
       });
     }
   }
-
   /**
    * init udpScoket
    */
@@ -100,6 +103,13 @@ class Mijia {
     this.udpScoket.bind(serverPort);
   }
 
+  /**
+   * init parsers
+   */
+  loadDevices() {
+    this._devices = require('./devices')(this);
+  }
+
   didFinishLaunching() {
     //1.discover who are mijia gateway
     let cmd_whois = { 'cmd': 'whois' };
@@ -110,12 +120,19 @@ class Mijia {
     }, 1800000); //1800s->30m
   }
 
+
   configureAccessory(accessory) {
     accessory.reachable = true;
     accessory.on('identify', (paired, callback) => {
       this.log.debug(accessory.displayName + " -> Identify!!!");
       callback();
     });
+  }
+
+
+  discoverZigbeeDevice(ip, port) {
+    let cmd_get_id_list = { cmd: 'get_id_list' };
+    this.sendMsg(cmd_get_id_list, ip, port);
   }
 
   /**
@@ -149,8 +166,11 @@ class Mijia {
     switch (cmd) {
       case 'iam': {
         let { ip, port, model } = json;
-        let cmd_get_id_list = { cmd: 'get_id_list' };
-        this.sendMsg(cmd_get_id_list, ip, port);
+        if (model == 'gateway') {
+          this.discoverZigbeeDevice(ip, port);
+        } else {
+          this.log.warn('receive a iam cmd,but model is %s', model);
+        }
         break;
       }
       case 'get_id_list_ack': {
@@ -185,39 +205,42 @@ class Mijia {
           this.geteways[sid].token = token;
           this.geteways[sid].last_time = new Date();
         } else {
-          let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id,type:'zigbee' };
+          let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, type: 'zigbee' };
           device = Object.assign(device, data);
           device.last_time = new Date();
           this.devices[sid] = device;
         }
         break;
       }
-      case 'write_ack': {
-        break;
-      }
-      case 'read_ack': {
-        let { sid, model, short_id, token } = json;
-        let data = JSON.parse(json.data);
-        if (model == 'gateway') {
-          this.gateways[sid].short_id = short_id;
-          this.geteways[sid].token = token;
-          this.geteways[sid].last_time = new Date();
-        } else {
-          let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, model: model };
-          device = Object.assign(device, data);
-          this.devices[sid] = device;
-        }
-        break;
-      }
+      case 'write_ack':
+      case 'read_ack':
       case 'report': {
-        //when the device status changed , will recive data
-
-
+        parseDevice(json, rinfo);
         break;
       }
       default: {
         this.log.warn('unkonwn cmd:[%s] from getway[%s]', cmd, (rinfo.address + ':' + rinfo.port));
       }
+    }
+  }
+
+  parseDevice(json, rinfo) {
+    //when the device status changed , will recive data
+    let { sid, model, short_id, token } = json;
+    let data = JSON.parse(json.data);
+    if (model == 'gateway') {
+      this.gateways[sid].short_id = short_id;
+      this.geteways[sid].token = token;
+      this.geteways[sid].last_time = new Date();
+    } else {
+      let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, model: model };
+      device = Object.assign(device, data);
+      this.devices[sid] = device;
+    }
+    if (this._devices[model]) {
+      this._devices[model].parseMsg(json, rinfo);
+    } else {
+      this.log.warn('receive report cmd, but no support device found->%s', model);
     }
   }
 }

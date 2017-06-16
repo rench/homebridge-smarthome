@@ -1,11 +1,7 @@
+var Accessory, PlatformAccessory, Service, Characteristic, UUIDGen;
 class Base {
   constructor(mijia) {
     this.mijia = mijia;
-    this.Accessory = mijia.Accessory;
-    this.PlatformAccessory = mijia.PlatformAccessory;
-    this.Service = mijia.Service;
-    this.Characteristic = mijia.Characteristic;
-    this.UUIDGen = mijia.UUIDGen;
   }
   /**
    * return true if the zigbee devices battery level is low 
@@ -20,6 +16,10 @@ class Base {
    */
   getBatteryLevel(voltage) {
     return isNaN(voltage) ? 0 : ((voltage - 2800) / 5);
+  }
+
+  registerAccessory(accessories) {
+    this.mijia.api.registerPlatformAccessories("homebridge-smarthome", "smarthome", accessories);
   }
   /**
    * parse msg receive from gateway
