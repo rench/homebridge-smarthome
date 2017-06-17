@@ -1,4 +1,3 @@
-var Accessory, PlatformAccessory, Service, Characteristic, UUIDGen;
 class Base {
   constructor(mijia) {
     this.mijia = mijia;

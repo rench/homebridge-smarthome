@@ -1,7 +1,8 @@
-let Accessory, Service, Characteristic, UUIDGen;
+var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
 
 const miio = require('miio');
 const dgram = require('dgram');
+const util = require('util');
 const inherits = require('util').inherits;
 const crypto = require('crypto');
 const iv = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
@@ -13,8 +14,8 @@ class Mijia {
   // config may be null
   // api may be null if launched from old homebridge version
   constructor(log, config, api) {
-    this.Accessory = Accessory;
     this.PlatformAccessory = PlatformAccessory;
+    this.Accessory = Accessory;
     this.Service = Service;
     this.Characteristic = Characteristic;
     this.UUIDGen = UUIDGen;
@@ -28,21 +29,23 @@ class Mijia {
     this.devices = {};
     //supported devices
     this._devices = {};
-    //init upd server
-    this.initUpdSocket();
-    //init config
-    this.initConfig(config);
-    //init device parsers
-    this.loadDevices();
     if (api) {
       // Save the API object as plugin needs to register new accessory via this object.
       this.api = api;
-      // Listen to event "didFinishLaunching", this means homebridge already finished loading cached accessories
-      // Platform Plugin should only register new accessory that doesn't exist in homebridge after this event.
-      // Or start discover new accessories
-      this.api.on('didFinishLaunching', this.didFinishLaunching);
     } else {
       this.log.error("Homebridge's version is too old, please upgrade!");
+    }
+    //init upd server
+    this.initUpdSocket().then(() => {
+      //init config
+      this.initConfig(config);
+      //init device parsers
+      this.loadDevices();
+    }).catch((err) => {
+      this.log.error('Mijia init upd socket error->%s', err);
+    });
+    if (this.api) {
+      this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
     }
   }
   /**
@@ -50,11 +53,6 @@ class Mijia {
    * @param {*homebridge} homebridge 
    */
   static init(homebridge) {
-    //export some properties from homebridge
-    Accessory = homebridge.platformAccessory;
-    Service = homebridge.hap.Service;
-    Characteristic = homebridge.hap.Characteristic;
-    UUIDGen = homebridge.hap.uuid;
     return new Promise((resolve, reject) => {
       homebridge.registerPlatform("homebridge-smarthome", "smarthome", Mijia, true);
       resolve();
@@ -79,28 +77,33 @@ class Mijia {
         this.devices[device.name] = device;
       });
     }
+    this.log.debug('initConfig done');
   }
   /**
    * init udpScoket
    */
   initUpdSocket() {
-    this.udpScoket = dgram.createSocket({
-      type: 'udp4',
-      reuseAddr: true
+    return new Promise((resolve, reject) => {
+      this.udpScoket = dgram.createSocket({
+        type: 'udp4',
+        reuseAddr: true
+      });
+      this.udpScoket.on('message', (msg, rinfo) => {
+        this.log.debug('mijia udp socket receive -> %s', new String(msg));
+        this.parseMsg(msg, rinfo);
+      });
+      this.udpScoket.on('error', (err) => {
+        this.log.error('error, msg -> %s, stack -> %s', err.message, err.stack);
+        reject(error);
+      });
+      this.udpScoket.on('listening', () => {
+        this.log.debug("Mijia upd server is listening on port 9898");
+        this.udpScoket.addMembership(multicastIp);
+        this.log.debug("Mijia add multicast to %s", multicastIp);
+        resolve();
+      });
+      this.udpScoket.bind(udpPort);
     });
-    this.udpScoket.on('message', (msg, rinfo) => {
-      this.log.debug('mijia udp socket receive -> %s', new String(msg));
-      this.parseMsg(msg, rinfo);
-    });
-    this.udpScoket.on('error', (err) => {
-      this.log.error('error, msg -> %s, stack -> %s', err.message, err.stack);
-    });
-    this.udpScoket.on('listening', () => {
-      this.log.debug("Mijia upd server is listening on port 9898");
-      udpScoket.addMembership(multicastIp);
-      this.log.debug("Mijia add multicast to %s", multicastIp);
-    });
-    this.udpScoket.bind(serverPort);
   }
 
   /**
@@ -108,11 +111,12 @@ class Mijia {
    */
   loadDevices() {
     this._devices = require('./devices')(this);
+    this.log.debug('loadDevices done');
   }
 
   didFinishLaunching() {
     //1.discover who are mijia gateway
-    let cmd_whois = { 'cmd': 'whois' };
+    let cmd_whois = { cmd: 'whois' };
     this.sendMsg(cmd_whois, multicastIp, multicastPort);
     //2.set interval to update mijia gateway and check the gateway alive
     setInterval(() => {
@@ -127,6 +131,9 @@ class Mijia {
       this.log.debug(accessory.displayName + " -> Identify!!!");
       callback();
     });
+    if (!this.accessories[accessory.UUID]) {
+      this.accessories[accessory.UUID] = accessory;
+    }
   }
 
 
@@ -142,11 +149,38 @@ class Mijia {
    * @param {*port} port 
    */
   sendMsg(msg, ip, port) {
+    this.log.debug('send msg->%s', util.inspect(msg));
     if (typeof msg == 'string') {
-      this.udpScoket.send(msg, 0, msg.length, ip, port);
+      this.udpScoket.send(msg, 0, msg.length, port, ip);
     } else {
       let str = JSON.stringify(msg);
-      this.udpScoket.send(str, 0, str.length, ip, port);
+      this.udpScoket.send(str, 0, str.length, port, ip);
+    }
+  }
+
+  /**
+ * send data via upd socket
+ * @param {*msg} msg 
+ * @param {*sid} sid
+ */
+  sendMsgToSid(msg, sid) {
+    this.log.debug('send msg->%s', util.inspect(msg));
+    let gateway = this.devices[sid];
+    if (!gateway) {
+      gateway = this.gateways[sid];
+    } else {
+      gateway = device.gateway;
+    }
+    if (!gateway) {
+      this.log.error(`can't find gateway sid->${sid}`);
+      return;
+    }
+    let { ip, port } = gateway;
+    if (typeof msg == 'string') {
+      this.udpScoket.send(msg, 0, msg.length, port, ip);
+    } else {
+      let str = JSON.stringify(msg);
+      this.udpScoket.send(str, 0, str.length, port, ip);
     }
   }
   /**
@@ -176,7 +210,7 @@ class Mijia {
       case 'get_id_list_ack': {
         let { sid, token } = json;
         let data = JSON.parse(json.data);
-        let gateway = this.gateways[sid] ? this.geteways[sid] : { sid: sid };
+        let gateway = this.gateways[sid] ? this.gateways[sid] : { sid: sid, model: 'gateway', token: token };
 
         gateway.ip = rinfo.address;
         gateway.port = rinfo.port;
@@ -195,15 +229,18 @@ class Mijia {
           cmd_read.sid = did;
           this.sendMsg(cmd_read, gateway.ip, gateway.port);
         });
+        break;
       }
       case 'heartbeat': {
         let { sid, model, short_id, token } = json;
         let data = JSON.parse(json.data);
         if (model == 'gateway') {
+          let gateway = this.gateways[sid] ? this.gateways[sid] : { sid: sid };
+          this.gateways[sid] = gateway;
           this.gateways[sid].model = 'gateway';
           this.gateways[sid].short_id = short_id;
-          this.geteways[sid].token = token;
-          this.geteways[sid].last_time = new Date();
+          this.gateways[sid].token = token;
+          this.gateways[sid].last_time = new Date();
         } else {
           let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, type: 'zigbee' };
           device = Object.assign(device, data);
@@ -215,7 +252,7 @@ class Mijia {
       case 'write_ack':
       case 'read_ack':
       case 'report': {
-        parseDevice(json, rinfo);
+        this.parseDevice(json, rinfo);
         break;
       }
       default: {
@@ -229,9 +266,13 @@ class Mijia {
     let { sid, model, short_id, token } = json;
     let data = JSON.parse(json.data);
     if (model == 'gateway') {
-      this.gateways[sid].short_id = short_id;
-      this.geteways[sid].token = token;
-      this.geteways[sid].last_time = new Date();
+      if (short_id) {
+        this.gateways[sid].short_id = short_id;
+      }
+      if (token) {
+        this.gateways[sid].token = token;
+      }
+      this.gateways[sid].last_time = new Date();
     } else {
       let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, model: model };
       device = Object.assign(device, data);
@@ -243,9 +284,33 @@ class Mijia {
       this.log.warn('receive report cmd, but no support device found->%s', model);
     }
   }
+  generateKey(sid) {
+    let gateway = this.devices[sid];
+    if (!gateway) {
+      gateway = this.gateways[sid];
+    } else {
+      gateway = device.gateway;
+    }
+    if (!gateway) {
+      this.log.error(`can't find gateway sid->${sid}`);
+      return;
+    }
+    console.log
+    let { password, token } = gateway;
+    let cipher = crypto.createCipheriv('aes-128-cbc', password, iv);
+    let key = cipher.update(token, "ascii", "hex");
+    cipher.final('hex');
+    return key;
+  }
 }
 //module exports define
 module.exports = (homebridge) => {
+  //export some properties from homebridge
+  PlatformAccessory = homebridge.platformAccessory;
+  Accessory = homebridge.hap.Accessory;
+  Service = homebridge.hap.Service;
+  Characteristic = homebridge.hap.Characteristic;
+  UUIDGen = homebridge.hap.uuid;
   //init mikit
   return Mijia.init(homebridge);
 }

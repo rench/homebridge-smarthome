@@ -1,6 +1,6 @@
-const gateway = require('./gateway');
+const Gateway = require('./gateway');
 module.exports = (mijia) => {
   let devices = {};
-  devices.gateway = new gateway(mijia);
+  devices.gateway = new Gateway(mijia);
   return devices;
 };

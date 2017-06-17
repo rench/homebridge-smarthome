@@ -1,12 +1,12 @@
 /**
  * this app.js is web server to manage your mijia's accessory
  */
-const express = require('express');
+//const express = require('express');
 const winston = require('winston');
 
-class MiApp {
+class WebApp {
   constructor() {
-    console.log('miapp start')
+    winston.info('webapp start')
   }
   init() {
     this.bind();
@@ -22,6 +22,6 @@ class MiApp {
 
 
 module.exports = () => {
-  const app = new MiApp();
+  const app = new WebApp();
   app.init();
 }
