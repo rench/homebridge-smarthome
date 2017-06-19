@@ -1,10 +1,10 @@
 const Base = require('./base');
-let Accessory, PlatformAccessory, Service, Characteristic, UUIDGen;
+let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
 class Contact extends Base {
   constructor(mijia) {
     super(mijia);
-    Accessory = mijia.Accessory;
     PlatformAccessory = mijia.PlatformAccessory;
+    Accessory = mijia.Accessory;
     Service = mijia.Service;
     Characteristic = mijia.Characteristic;
     UUIDGen = mijia.UUIDGen;
@@ -34,7 +34,7 @@ class Contact extends Base {
       });
       service = new Service.ContactSensor(name);
       accessory.addService(service, name);
-      this.mijia.accessories[uuid] = accessory;
+      accessory.addService(Service.BatteryService, name);
     } else {
       service = accessory.getService(Service.ContactSensor);
     }
@@ -44,7 +44,7 @@ class Contact extends Base {
     } else {
       service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
     }
-    setBatteryService(sid, voltage, accessory);
+    this.setBatteryService(sid, voltage, accessory);
     if (!this.mijia.accessories[uuid]) {
       this.mijia.accessories[uuid] = accessory;
       this.registerAccessory([accessory]);
@@ -53,7 +53,14 @@ class Contact extends Base {
   }
 
   setBatteryService(sid, voltage, accessory) {
-
-
+    let service = accessory.getService(Service.BatteryService);
+    if (voltage != undefined) {
+      let isBatteryLow = this.isBatteryLow(voltage);
+      let batteryLevel = this.getBatteryLevel(voltage);
+      service.getCharacteristic(Characteristic.StatusLowBattery).updateValue(isBatteryLow);
+      service.getCharacteristic(Characteristic.BatteryLevel).updateValue(batteryLevel);
+      service.getCharacteristic(Characteristic.ChargingState).updateValue(false);
+    }
   }
 }
+module.exports = Contact;
