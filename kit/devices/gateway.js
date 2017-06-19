@@ -10,6 +10,11 @@ class Gateway extends Base {
     Characteristic = mijia.Characteristic;
     UUIDGen = mijia.UUIDGen;
   }
+  /**
+   * parse the gateway json msg
+   * @param {*json} json 
+   * @param {*remoteinfo} rinfo 
+   */
   parseMsg(json, rinfo) {
     let { cmd, model, sid } = json;
     let data = JSON.parse(json.data);
@@ -22,6 +27,11 @@ class Gateway extends Base {
       this.setLightbulb(sid, rgb);
     }
   }
+  /**
+   * set up gateway LightSensor(mijia gateway lightsensor)
+   * @param {*device id} sid 
+   * @param {*device illumination value} illumination 
+   */
   setLightSensor(sid, illumination) {
     let uuid = UUIDGen.generate('Gateway-LightSensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
@@ -49,7 +59,11 @@ class Gateway extends Base {
       this.registerAccessory([accessory]);
     }
   }
-
+  /**
+   * set up Lightbulb Service(mijia gateway Lightbulb) 
+   * @param {*device sid} sid 
+   * @param {*device rgb value} rgb 
+   */
   setLightbulb(sid, rgb) {
     let uuid = UUIDGen.generate('Gateway-Lightbulb@' + sid);
     let accessory = this.mijia.accessories[uuid];
@@ -66,6 +80,7 @@ class Gateway extends Base {
         callback();
       });
       service = new Service.Lightbulb(name);
+      //add optional characteristic intent to display color menu in homekit app
       service.addCharacteristic(Characteristic.Hue);
       service.addCharacteristic(Characteristic.Saturation);
       service.addCharacteristic(Characteristic.Brightness);
@@ -74,8 +89,8 @@ class Gateway extends Base {
       service = accessory.getService(Service.Lightbulb);
     }
     accessory.reachable = true;
-    if (!accessory.ctx) {
-      accessory.ctx = {};
+    if (!accessory.context) {
+      accessory.context = {};
     }
     //update Characteristics
     let brightness = (rgb & 0xFF000000) >>> 24;
@@ -92,29 +107,28 @@ class Gateway extends Base {
       service.getCharacteristic(Characteristic.Brightness).updateValue(brightness);
       service.getCharacteristic(Characteristic.Hue).updateValue(hue);
       service.getCharacteristic(Characteristic.Saturation).updateValue(sat);
-      accessory.ctx.lastRgb = rgb;
+      accessory.context.lastRgb = rgb;
     }
     //bind set event if not set
     var setters = service.getCharacteristic(Characteristic.On).listeners('set');
     if (!setters || setters.length == 0) {
       service.getCharacteristic(Characteristic.On).on('set', (value, callback) => {
-        this.mijia.log.debug(accessory.ctx);
         let data = {
           rgb: 0,
           key: ''
         }
         this.mijia.log.debug(`set gateway light on->${value}`);
         if (value) { //if value is true or 1
-          let lastRgb = accessory.ctx.lastRgb;
+          let lastRgb = accessory.context.lastRgb;
           if (lastRgb == undefined) {
             data.rgb = 0xFFFFFFFF; //default
-            accessory.ctx.lastRgb = data.rgb;
+            accessory.context.lastRgb = data.rgb;
           } else {
-            data.rgb = accessory.ctx.lastRgb;
+            data.rgb = accessory.context.lastRgb;
           }
-          accessory.ctx.count = 1;
+          accessory.context.count = 1;
         } else {
-          accessory.ctx.count = 0;
+          accessory.context.count = 0;
         }
         data.key = this.mijia.generateKey(sid);
         let cmd = { cmd: 'write', model: 'gateway', sid: sid, data: JSON.stringify(data) }
@@ -124,30 +138,30 @@ class Gateway extends Base {
 
       service.getCharacteristic(Characteristic.Brightness).on('set', (value, callback) => {
         this.mijia.log.debug(`set gateway light brightness->${value}`);
-        if (accessory.ctx.count != undefined && accessory.ctx.count == 1 && value == 100) {
+        if (accessory.context.count != undefined && accessory.context.count == 1 && value == 100) {
           this.mijia.log.warn(`discard set brightness->${value} when turn on the light`);
         } else {
           let data = {
             rgb: 0,
             key: ''
           }
-          let lastRgb = accessory.ctx.lastRgb;
+          let lastRgb = accessory.context.lastRgb;
           lastRgb = lastRgb ? lastRgb : 0xFFFFFFFF;
           let rgb = value << 24 | (lastRgb & 0x00FFFFFF);
           data.rgb = rgb;
           data.key = this.mijia.generateKey(sid);
           let cmd = { cmd: 'write', model: 'gateway', sid: sid, data: JSON.stringify(data) }
           this.mijia.sendMsgToSid(cmd, sid);
-          accessory.ctx.lastRgb = rgb;
+          accessory.context.lastRgb = rgb;
         }
-        accessory.ctx.count = 2;
+        accessory.context.count = 2;
         callback();
       });
 
       service.getCharacteristic(Characteristic.Saturation).on('set', (value, callback) => {
         this.mijia.log.debug(`set gateway light Saturation->${value}`);
         if (value != undefined) {
-          accessory.ctx.lastSaturation = value;
+          accessory.context.lastSaturation = value;
         }
         callback();
       });
@@ -158,8 +172,8 @@ class Gateway extends Base {
           rgb: 0,
           key: ''
         }
-        let lastRgb = accessory.ctx.lastRgb;
-        let lastSaturation = accessory.ctx.lastSaturation;
+        let lastRgb = accessory.context.lastRgb;
+        let lastSaturation = accessory.context.lastSaturation;
         lastSaturation = lastSaturation ? lastSaturation : 100;
         let lastBrightness = (lastRgb & 0xFF000000) >>> 24;
         let rgbArr = colors.hkhue_to_rgb(value, lastSaturation); //convert hue and sat to rgb value
@@ -173,7 +187,7 @@ class Gateway extends Base {
         data.key = this.mijia.generateKey(sid);
         let cmd = { cmd: 'write', model: 'gateway', sid: sid, data: JSON.stringify(data) }
         this.mijia.sendMsgToSid(cmd, sid);
-        accessory.ctx.lastRgb = rgb;
+        accessory.context.lastRgb = rgb;
         callback();
       });
 
