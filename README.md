@@ -32,6 +32,8 @@ Thanks for
 1. Gateway(LightSensor/Lightbulb)
 2. ContactSensor(ContactSensor)
 3. TemperatureAndHumiditySensor(HumiditySensor/TemperatureSensor)
+4. Monitor(MonitorSensor)
+5. Switch(StatelessProgrammableSwitch)
 
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)

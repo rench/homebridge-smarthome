@@ -1,6 +1,6 @@
 const Base = require('./base');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
-class Monitor extends Base {
+class Switch extends Base {
   constructor(mijia) {
     super(mijia);
     PlatformAccessory = mijia.PlatformAccessory;
@@ -19,38 +19,45 @@ class Monitor extends Base {
     let data = JSON.parse(json.data);
     let { voltage, status } = data;
     this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} status->${status}`);
-    this.setMotionSensor(sid, voltage, status)
+    this.setSwitch(sid, voltage, status)
   }
   /**
-   * set up MotionSensor(mijia motion sensor)
+   * set up Switch(mijia Switch)
    * @param {*device id} sid 
    * @param {*device voltage} voltage 
    * @param {*device status} status 
    */
-  setMotionSensor(sid, voltage, status) {
-    let uuid = UUIDGen.generate('Mijia-MotionSensor@' + sid);
+  setSwitch(sid, voltage, status) {
+    let uuid = UUIDGen.generate('Mijia-Switch@' + sid);
     let accessory = this.mijia.accessories[uuid];
     let service;
     if (!accessory) {
       //init a new homekit accessory
       let name = sid.substring(sid.length - 4);
-      accessory = new PlatformAccessory(name, uuid, Accessory.Categories.SENSOR);
+      accessory = new PlatformAccessory(name, uuid, Accessory.Categories.PROGRAMMABLE_SWITCH);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")
-        .setCharacteristic(Characteristic.Model, "Mijia MotionSensor")
+        .setCharacteristic(Characteristic.Model, "Mijia Switch")
         .setCharacteristic(Characteristic.SerialNumber, sid);
       accessory.on('identify', function (paired, callback) {
         callback();
       });
-      service = new Service.MotionSensor(name);
+      service = new Service.StatelessProgrammableSwitch(name);
       accessory.addService(service, name);
       accessory.addService(new Service.BatteryService(name), name);
     } else {
-      service = accessory.getService(Service.MotionSensor);
+      service = accessory.getService(Service.StatelessProgrammableSwitch);
     }
     accessory.reachable = true;
     if (status != undefined) {
-      service.getCharacteristic(Characteristic.MotionDetected).updateValue('motion' == status);
+      var event = service.getCharacteristic(Characteristic.ProgrammableSwitchEvent);
+      if (status == 'click') {
+        event.updateValue(Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS);
+      } else if (status == 'double_click') {
+        event.updateValue(Characteristic.ProgrammableSwitchEvent.DOUBLE_PRESS);
+      } else if (status == 'long_click_release') {
+        event.updateValue(Characteristic.ProgrammableSwitchEvent.LONG_PRESS);
+      }
     }
     this.setBatteryService(sid, voltage, accessory);
     if (!this.mijia.accessories[uuid]) {
@@ -60,4 +67,4 @@ class Monitor extends Base {
     return accessory;
   }
 }
-module.exports = Monitor;
+module.exports = Switch;
