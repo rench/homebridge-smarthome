@@ -2,7 +2,7 @@
 [![npm version](https://badge.fury.io/js/homebridge-smarthome.svg)](https://badge.fury.io/js/homebridge-smarthome)
 
 homebridge plugin and webapp for smarthome(mijia、broadlink).  
-Thanks for [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](https://github.com/snOOrz/homebridge-aqara)), all other developer and testers.   
+Thanks for [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](https://github.com/snOOrz/homebridge-aqara)),[YinHangCode](https://github.com/YinHangCode/homebridge-mi-aqara)(the author of [homebridge-mi-aqara](https://github.com/YinHangCode/homebridge-mi-aqara)), all other developer and testers.   
 
 **Note: I have only a part of these devices, so some devices don't have tested. If you find bugs, please submit them to [issues](https://github.com/rench/homebridge-smarthome/issues).**
 
@@ -27,17 +27,17 @@ Thanks for [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](
 ![](http://7fv93h.com1.z0.glb.clouddn.com/ElectricCurtain.jpg)
 
 ### Supported Devices
-1.Gateway(LightSensor/Lightbulb)
-2.ContactSensor(ContactSensor)
-3.TemperatureAndHumiditySensor(HumiditySensor/TemperatureSensor)
+1. Gateway(LightSensor/Lightbulb)
+2. ContactSensor(ContactSensor)
+3. TemperatureAndHumiditySensor(HumiditySensor/TemperatureSensor)
 
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP2.jpg)
 
 ### Supported Devices
-1.MP1
-2.MP2
+1. MP1
+2. MP2
 
 
 ## Pre-Requirements
@@ -104,6 +104,6 @@ homebridge -D
 
 ## Version Logs 
 ### 1.0.1
-1.mijia gateway sensor accessory.
-2.mijia door and window sensor accessory.
-3.mijia temperature and humidity sensor accessory.
+1. mijia gateway sensor accessory.
+2. mijia door and window sensor accessory.
+3. mijia temperature and humidity sensor accessory.
