@@ -1,8 +1,10 @@
 # homebridge plugin and webapp for smarthome(mijia、broadlink)
 [![npm version](https://badge.fury.io/js/homebridge-smarthome.svg)](https://badge.fury.io/js/homebridge-smarthome)
 
-homebridge plugin and webapp for smarthome(mijia、broadlink).  
-Thanks for [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](https://github.com/snOOrz/homebridge-aqara)),[YinHangCode](https://github.com/YinHangCode/homebridge-mi-aqara)(the author of [homebridge-mi-aqara](https://github.com/YinHangCode/homebridge-mi-aqara)), all other developer and testers.   
+Thanks for 
+1. [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](https://github.com/snOOrz/homebridge-aqara))
+2. [YinHangCode](https://github.com/YinHangCode/homebridge-mi-aqara)(the author of [homebridge-mi-aqara](https://github.com/YinHangCode/homebridge-mi-aqara))
+3. all other developer and testers.   
 
 **Note: I have only a part of these devices, so some devices don't have tested. If you find bugs, please submit them to [issues](https://github.com/rench/homebridge-smarthome/issues).**
 
