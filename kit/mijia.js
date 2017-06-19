@@ -1,14 +1,17 @@
 var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
+var homebridge;
 
 const miio = require('miio');
 const dgram = require('dgram');
 const util = require('util');
 const inherits = require('util').inherits;
 const crypto = require('crypto');
+const devices = require('./mijia');
 const iv = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 const multicastIp = '224.0.0.50';
 const multicastPort = 4321;
 const udpPort = 9898;
+
 
 class Mijia {
   // config may be null
@@ -47,6 +50,10 @@ class Mijia {
     if (this.api) {
       this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
     }
+    if (homebridge.mijia != undefined) {
+      homebridge.mijia = this;
+    }
+    this.log.debug('mijia constructor done');
   }
   /**
    * static method to export hap properties
@@ -110,7 +117,7 @@ class Mijia {
    * init parsers
    */
   loadDevices() {
-    this._devices = require('./devices')(this);
+    this._devices = devices(this);
     this.log.debug('loadDevices done');
   }
 
@@ -124,7 +131,10 @@ class Mijia {
     }, 1800000); //1800s->30m
   }
 
-
+  /**
+   * configure cached accessory
+   * @param {*} accessory 
+   */
   configureAccessory(accessory) {
     accessory.reachable = true;
     accessory.on('identify', (paired, callback) => {
@@ -135,8 +145,11 @@ class Mijia {
       this.accessories[accessory.UUID] = accessory;
     }
   }
-
-
+  /**
+   * discover zigbee deivce via gateway
+   * @param {*gateway ip} ip 
+   * @param {*gateway port} port 
+   */
   discoverZigbeeDevice(ip, port) {
     let cmd_get_id_list = { cmd: 'get_id_list' };
     this.sendMsg(cmd_get_id_list, ip, port);
@@ -260,7 +273,11 @@ class Mijia {
       }
     }
   }
-
+  /**
+   * parse zigbee devices msg
+   * @param {*gateway json msg} json 
+   * @param {*remote info} rinfo 
+   */
   parseDevice(json, rinfo) {
     //when the device status changed , will recive data
     let { sid, model, short_id, token } = json;
@@ -284,6 +301,10 @@ class Mijia {
       this.log.warn('receive report cmd, but no support device found->%s', model);
     }
   }
+  /**
+   * generate gateway write Key
+   * @param {*gateway id} sid 
+   */
   generateKey(sid) {
     let gateway = this.devices[sid];
     if (!gateway) {
@@ -311,6 +332,7 @@ module.exports = (homebridge) => {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
   UUIDGen = homebridge.hap.uuid;
+  homebridge = homebridge;
   //init mikit
   return Mijia.init(homebridge);
 }
