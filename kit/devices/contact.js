@@ -9,6 +9,11 @@ class Contact extends Base {
     Characteristic = mijia.Characteristic;
     UUIDGen = mijia.UUIDGen;
   }
+  /**
+   * parse the gateway json msg
+   * @param {*json} json 
+   * @param {*remoteinfo} rinfo 
+   */
   parseMsg(json, rinfo) {
     let { cmd, model, sid } = json;
     let data = JSON.parse(json.data);
@@ -16,7 +21,12 @@ class Contact extends Base {
     this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} status->${status}`);
     this.setContactSensor(sid, voltage, status);
   }
-
+  /**
+   * set up ContactSensor(mijia door and window sensors)
+   * @param {*device id} sid 
+   * @param {*device voltage} voltage 
+   * @param {*device status} status 
+   */
   setContactSensor(sid, voltage, status) {
     let uuid = UUIDGen.generate('Mijia-ContactSensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
@@ -34,7 +44,7 @@ class Contact extends Base {
       });
       service = new Service.ContactSensor(name);
       accessory.addService(service, name);
-      accessory.addService(Service.BatteryService, name);
+      accessory.addService(new Service.BatteryService(name), name);
     } else {
       service = accessory.getService(Service.ContactSensor);
     }
@@ -50,17 +60,6 @@ class Contact extends Base {
       this.registerAccessory([accessory]);
     }
     return accessory;
-  }
-
-  setBatteryService(sid, voltage, accessory) {
-    let service = accessory.getService(Service.BatteryService);
-    if (voltage != undefined) {
-      let isBatteryLow = this.isBatteryLow(voltage);
-      let batteryLevel = this.getBatteryLevel(voltage);
-      service.getCharacteristic(Characteristic.StatusLowBattery).updateValue(isBatteryLow);
-      service.getCharacteristic(Characteristic.BatteryLevel).updateValue(batteryLevel);
-      service.getCharacteristic(Characteristic.ChargingState).updateValue(false);
-    }
   }
 }
 module.exports = Contact;

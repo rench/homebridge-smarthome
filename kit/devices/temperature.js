@@ -9,6 +9,11 @@ class Temperature extends Base {
     Characteristic = mijia.Characteristic;
     UUIDGen = mijia.UUIDGen;
   }
+  /**
+ * parse the gateway json msg
+ * @param {*json} json 
+ * @param {*remoteinfo} rinfo 
+ */
   parseMsg(json, rinfo) {
     let { cmd, model, sid } = json;
     let data = JSON.parse(json.data);
@@ -16,7 +21,12 @@ class Temperature extends Base {
     this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} temperature->${temperature}`);
     this.setTemperatureSensor(sid, voltage, temperature)
   }
-
+  /**
+   * set up TemperatureSensor(mijia temperature and humidity sensor)
+   * @param {*device id} sid 
+   * @param {*device voltage} voltage 
+   * @param {*device temperature} temperature 
+   */
   setTemperatureSensor(sid, voltage, temperature) {
     let uuid = UUIDGen.generate('Mijia-TemperatureSensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
@@ -48,16 +58,6 @@ class Temperature extends Base {
       this.registerAccessory([accessory]);
     }
     return accessory;
-  }
-  setBatteryService(sid, voltage, accessory) {
-    let service = accessory.getService(Service.BatteryService);
-    if (voltage != undefined) {
-      let isBatteryLow = this.isBatteryLow(voltage);
-      let batteryLevel = this.getBatteryLevel(voltage);
-      service.getCharacteristic(Characteristic.StatusLowBattery).updateValue(isBatteryLow);
-      service.getCharacteristic(Characteristic.BatteryLevel).updateValue(batteryLevel);
-      service.getCharacteristic(Characteristic.ChargingState).updateValue(false);
-    }
   }
 }
 module.exports = Temperature;

@@ -9,6 +9,11 @@ class Humidity extends Base {
     Characteristic = mijia.Characteristic;
     UUIDGen = mijia.UUIDGen;
   }
+  /**
+   * parse the gateway json msg
+   * @param {*json} json 
+   * @param {*remoteinfo} rinfo 
+   */
   parseMsg(json, rinfo) {
     let { cmd, model, sid } = json;
     let data = JSON.parse(json.data);
@@ -16,7 +21,12 @@ class Humidity extends Base {
     this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} humidity->${humidity}`);
     this.setHumiditySensor(sid, voltage, humidity)
   }
-
+  /**
+   * setup humiditysensor
+   * @param {*} sid 
+   * @param {*} voltage 
+   * @param {*} humidity 
+   */
   setHumiditySensor(sid, voltage, humidity) {
     let uuid = UUIDGen.generate('Mijia-HumiditySensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
@@ -34,7 +44,7 @@ class Humidity extends Base {
       });
       service = new Service.HumiditySensor(name);
       accessory.addService(service, name);
-      accessory.addService(Service.BatteryService, name);
+      accessory.addService(new Service.BatteryService(name), name);
     } else {
       service = accessory.getService(Service.HumiditySensor);
     }
@@ -48,17 +58,6 @@ class Humidity extends Base {
       this.registerAccessory([accessory]);
     }
     return accessory;
-  }
-  setBatteryService(sid, voltage, accessory) {
-    let service = accessory.getService(Service.BatteryService);
-    if (voltage != undefined) {
-      let isBatteryLow = this.isBatteryLow(voltage);
-      let batteryLevel = this.getBatteryLevel(voltage);
-      service.getCharacteristic(Characteristic.StatusLowBattery).updateValue(isBatteryLow);
-      service.getCharacteristic(Characteristic.BatteryLevel).updateValue(batteryLevel);
-      service.getCharacteristic(Characteristic.ChargingState).updateValue(false);
-    }
-
   }
 }
 module.exports = Humidity;

@@ -16,7 +16,26 @@ class Base {
   getBatteryLevel(voltage) {
     return isNaN(voltage) ? 0 : ((voltage - 2800) / 5);
   }
-
+  /**
+ * setup 
+ * @param {*device id} sid 
+ * @param {*device voltage} voltage 
+ * @param {*device homekit accessory} accessory 
+ */
+  setBatteryService(sid, voltage, accessory) {
+    let service = accessory.getService(Service.BatteryService);
+    if (voltage != undefined && service != undefined) {
+      let isBatteryLow = this.isBatteryLow(voltage);
+      let batteryLevel = this.getBatteryLevel(voltage);
+      service.getCharacteristic(Characteristic.StatusLowBattery).updateValue(isBatteryLow);
+      service.getCharacteristic(Characteristic.BatteryLevel).updateValue(batteryLevel);
+      service.getCharacteristic(Characteristic.ChargingState).updateValue(false);
+    }
+  }
+  /**
+   * registry accessories to homekit
+   * @param {*accessories} accessories 
+   */
   registerAccessory(accessories) {
     this.mijia.api.registerPlatformAccessories("homebridge-smarthome", "smarthome", accessories);
   }
