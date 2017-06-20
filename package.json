@@ -24,11 +24,10 @@
   },
   "homepage": "https://github.com/rench/homebridge-smarthome#readme",
   "dependencies": {
-    "express": "^4.15.3",
     "winston": "^2.3.1"
   },
   "engines": {
-    "homebridge": ">=0.4.1",
+    "homebridge": ">=0.4.20",
     "node": ">=6.10.3"
   }
 }

@@ -89,11 +89,20 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
         ],
         "devices": [
           {
-            "sid": "VacuumCleanerSID01",
+            "sid": "Air Purifier 001",
+            "name": "Air Purifier",
+            "ip": "IP_ADDRESS IF PRESENT",
+            "token": "TOKEN IF PRESENT",
+            "type": "wifi",
+            "model": "air-purifier"
+          },
+          {
+            "sid": "Vacuum Cleaner 001",
             "name": "Vacuum Cleaner",
-            "ip": "IP_ADDRESS_OF_THE_ROBOT",
-            "token": "TOKEN_DISCOVERED_FROM_STEP_7",
-            "type": "wifi"
+            "ip": "IP_ADDRESS IF PRESENT",
+            "token": "TOKEN IF PRESENT",
+            "type": "wifi",
+            "model": "vacuum"
           }
         ]
       },

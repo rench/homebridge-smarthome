@@ -1,7 +1,6 @@
 /**
  * this app.js is web server to manage your mijia's accessory
  */
-//const express = require('express');
 const winston = require('winston');
 
 class WebApp {
