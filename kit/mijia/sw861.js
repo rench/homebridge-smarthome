@@ -1,6 +1,6 @@
 const Base = require('./base');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
-class Switch extends Base {
+class SW861 extends Base {
   constructor(mijia) {
     super(mijia);
     PlatformAccessory = mijia.PlatformAccessory;
@@ -17,18 +17,18 @@ class Switch extends Base {
   parseMsg(json, rinfo) {
     let { cmd, model, sid } = json;
     let data = JSON.parse(json.data);
-    let { voltage, status } = data;
-    this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} status->${status}`);
-    this.setSwitch(sid, voltage, status)
+    let { voltage, channel_0 } = data;
+    this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} channel_0->${channel_0}`);
+    this.setSwitch(sid, voltage, channel_0);
   }
   /**
-   * set up Switch(mijia Switch)
+   * set up Switch(mijia 86sw1)
    * @param {*device id} sid 
    * @param {*device voltage} voltage 
-   * @param {*device status} status 
+   * @param {*device channel} channel 
    */
-  setSwitch(sid, voltage, status) {
-    let uuid = UUIDGen.generate('Mijia-Switch@' + sid);
+  setSwitch(sid, voltage, channel) {
+    let uuid = UUIDGen.generate('Mijia-86SW1@' + sid);
     let accessory = this.mijia.accessories[uuid];
     let service;
     if (!accessory) {
@@ -37,7 +37,7 @@ class Switch extends Base {
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.PROGRAMMABLE_SWITCH);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")
-        .setCharacteristic(Characteristic.Model, "Mijia Switch")
+        .setCharacteristic(Characteristic.Model, "Mijia 86SW1")
         .setCharacteristic(Characteristic.SerialNumber, sid);
       accessory.on('identify', function (paired, callback) {
         callback();
@@ -49,7 +49,7 @@ class Switch extends Base {
       service = accessory.getService(Service.StatelessProgrammableSwitch);
     }
     accessory.reachable = true;
-    if (status != undefined) {
+    if (channel != undefined) {
       var event = service.getCharacteristic(Characteristic.ProgrammableSwitchEvent);
       if (status == 'click') {
         event.updateValue(Characteristic.ProgrammableSwitchEvent.SINGLE_PRESS); //0
@@ -65,4 +65,4 @@ class Switch extends Base {
     return accessory;
   }
 }
-module.exports = Switch;
+module.exports = SW861;

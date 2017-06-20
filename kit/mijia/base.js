@@ -14,7 +14,7 @@ class Base {
    * @param {*} voltage 
    */
   getBatteryLevel(voltage) {
-    return isNaN(voltage) ? 0 : ((voltage - 2800) / 5);
+    return isNaN(voltage) ? 0 : ((voltage - 2800) / 10);
   }
   /**
  * setup 

@@ -50,6 +50,8 @@ class Broadlink {
               deviceCfg.name = name + '@' + i;
               mp.init(deviceCfg);
             }
+          } else {
+            this.log.warn('unsupported device ' + util.inspect(device));
           }
         });
       }

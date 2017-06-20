@@ -29,11 +29,19 @@ Thanks for
 ![](http://7fv93h.com1.z0.glb.clouddn.com/ElectricCurtain.jpg)
 
 ### Supported Devices
-1. Gateway(LightSensor/Lightbulb)
+1. Gateway(LightSensor/Lightbulb[hue])
 2. ContactSensor(ContactSensor)
 3. TemperatureAndHumiditySensor(HumiditySensor/TemperatureSensor)
-4. Monitor(MonitorSensor)
+4. MonitorSensor(MonitorSensor)
 5. Switch(StatelessProgrammableSwitch)
+6. Plug(Outlet)
+7. CtrlNeutral1/CtrlNeutral2(Switch)
+8. CtrlLN1/CtrlLN2(Switch)
+9. 86SW1/86SW2(StatelessProgrammableSwitch)
+10. 86Plug(Outlet)
+11. Smoke(SmokeSensor)
+12. Natgas(SmokeSensor)
+13. Curtain(WindowCovering)
 
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)
