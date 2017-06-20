@@ -1,8 +1,8 @@
 var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
-var homebridge;
+var _homebridge;
 const winston = require('winston');
 const util = require('util');
-const broadlink = require('./broadlink');
+const broadlink_lib = require('./broadlink/');
 class Broadlink {
   // config may be null
   // api may be null if launched from old homebridge version
@@ -25,19 +25,33 @@ class Broadlink {
     if (this.api) {
       this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
     }
-    if (homebridge.broadlink != undefined) {
-      homebridge.broadlink = this;
+    if (_homebridge.broadlink != undefined) {
+      _homebridge.broadlink = this;
     }
     this.log.debug('broadlink constructor done');
   }
-  static init() {
+  static init(homebridge) {
     return new Promise((resolve, reject) => {
-      homebridge.registerPlatform("homebridge-smarthome", "smarthome", Broadlink, true);
+      homebridge.registerPlatform("homebridge-smarthome", "smarthome-broadlink", Broadlink, true);
       resolve();
     });
   }
+  /**
+  * configure cached accessory
+  * @param {*} accessory 
+  */
+  configureAccessory(accessory) {
+    accessory.reachable = true;
+    accessory.on('identify', (paired, callback) => {
+      this.log.debug(accessory.displayName + " -> Identify!!!");
+      callback();
+    });
+    if (!this.accessories[accessory.UUID]) {
+      this.accessories[accessory.UUID] = accessory;
+    }
+  }
   didFinishLaunching() {
-    let { broadlink } = config;
+    let { broadlink } = this.config;
     if (broadlink != undefined) {
       let { devices } = broadlink;
       if (devices && devices.length > 0) { //for wifi devices
@@ -45,8 +59,8 @@ class Broadlink {
           let { name, type, mac, ip } = device;
           if (type == 'MP1' || type == 'MP2') {
             for (let i = 1; i <= 4; i++) { //mp1 and mp2(two usb devices) have 4 plug
-              let mp = new broadlink.MP(this);
-              let deviceCfg = util.inherits({}, device);
+              let mp = new broadlink_lib.MP(this);
+              let deviceCfg = Object.assign({}, device);
               deviceCfg.name = name + '@' + i;
               mp.init(deviceCfg);
             }
@@ -67,7 +81,7 @@ module.exports = (homebridge) => {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
   UUIDGen = homebridge.hap.uuid;
-  homebridge = homebridge;
+  _homebridge = homebridge;
   //init mikit
   return Broadlink.init(homebridge);
 }

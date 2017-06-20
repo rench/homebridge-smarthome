@@ -1,12 +1,12 @@
 var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
-var homebridge;
+var _homebridge;
 
 const miio = require('miio');
 const dgram = require('dgram');
 const util = require('util');
 const inherits = require('util').inherits;
 const crypto = require('crypto');
-const devices = require('./mijia');
+const devices = require('./mijia/');
 const iv = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 const multicastIp = '224.0.0.50';
 const multicastPort = 4321;
@@ -50,10 +50,10 @@ class Mijia {
     if (this.api) {
       this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
     }
-    if (homebridge.mijia != undefined) {
-      homebridge.mijia = this;
+    if (_homebridge.mijia != undefined) {
+      _homebridge.mijia = this;
     }
-    this.log.debug('mijia constructor done');
+    this.log.debug('Mijia constructor done');
   }
   /**
    * static method to export hap properties
@@ -61,7 +61,7 @@ class Mijia {
    */
   static init(homebridge) {
     return new Promise((resolve, reject) => {
-      homebridge.registerPlatform("homebridge-smarthome", "smarthome", Mijia, true);
+      homebridge.registerPlatform("homebridge-smarthome", "smarthome-mijia", Mijia, true);
       resolve();
     });
   }
@@ -182,7 +182,7 @@ class Mijia {
     if (!gateway) {
       gateway = this.gateways[sid];
     } else {
-      gateway = device.gateway;
+      gateway = gateway.gateway;
     }
     if (!gateway) {
       this.log.error(`can't find gateway sid->${sid}`);
@@ -255,7 +255,7 @@ class Mijia {
           this.gateways[sid].token = token;
           this.gateways[sid].last_time = new Date();
         } else {
-          let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, type: 'zigbee' };
+          let device = this.devices[sid] ? this.devices[sid] : { sid: sid, short_id: short_id, type: 'zigbee' };
           device = Object.assign(device, data);
           device.last_time = new Date();
           this.devices[sid] = device;
@@ -291,7 +291,7 @@ class Mijia {
       }
       this.gateways[sid].last_time = new Date();
     } else {
-      let device = this.devices[sid] ? this.devices : { sid: sid, short_id: short_id, model: model };
+      let device = this.devices[sid] ? this.devices[sid] : { sid: sid, short_id: short_id, model: model };
       device = Object.assign(device, data);
       this.devices[sid] = device;
     }
@@ -310,7 +310,7 @@ class Mijia {
     if (!gateway) {
       gateway = this.gateways[sid];
     } else {
-      gateway = device.gateway;
+      gateway = gateway.gateway;
     }
     if (!gateway) {
       this.log.error(`can't find gateway sid->${sid}`);
@@ -332,7 +332,7 @@ module.exports = (homebridge) => {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
   UUIDGen = homebridge.hap.uuid;
-  homebridge = homebridge;
+  _homebridge = homebridge;
   //init mikit
   return Mijia.init(homebridge);
 }

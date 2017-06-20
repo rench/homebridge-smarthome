@@ -54,7 +54,7 @@ class Plug extends Base {
     let use_state = false, on_state = false;
     if (status == 'on') {
       on_state = true;
-      if (inuse) {
+      if (inuse == '1') {
         use_state = true;
       }
     }

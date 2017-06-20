@@ -60,6 +60,7 @@ class MP {
             dev.set_power(this.index, state);
             dev.exit();
             this.powered = state;
+            callback(null, this.powered);
           } else {
             dev.exit();
             if (retry > 3) {
@@ -115,7 +116,7 @@ class MP {
   * @param {*accessories} accessories 
   */
   registerAccessory(accessories) {
-    this.broadlink.api.registerPlatformAccessories("homebridge-smarthome", "smarthome", accessories);
+    this.broadlink.api.registerPlatformAccessories("homebridge-smarthome", "smarthome-broadlink", accessories);
   }
 
   macStringToMacBuff(mac) {

@@ -74,18 +74,18 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
     "port": 51826,
     "pin": "031-45-154"
   },
-  "platforms": [
+    "platforms": [
     {
-      "platform": "smarthome",
+      "platform": "smarthome-mijia",
       "web": {
         "port": 8888
       },
       "mijia": {
         "sids": [
-          "34660088faed"
+          "34ce0088faed"
         ],
         "passwords": [
-          "75ED5A23114A44D4"
+          "75ED5A235C4A44D4"
         ],
         "devices": [
           {
@@ -105,12 +105,15 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
             "model": "vacuum"
           }
         ]
-      },
+      }
+    },
+    {
+      "platform": "smarthome-broadlink",
       "broadlink": {
         "devices": [
           {
             "name": "MP2",
-            "type": "MP",
+            "type": "MP2",
             "mac": "34:EA:34:D9:FE:B3"
           }
         ]

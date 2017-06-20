@@ -1,20 +1,26 @@
+let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
 class Base {
   constructor(mijia) {
     this.mijia = mijia;
+    PlatformAccessory = mijia.PlatformAccessory;
+    Accessory = mijia.Accessory;
+    Service = mijia.Service;
+    Characteristic = mijia.Characteristic;
+    UUIDGen = mijia.UUIDGen;
   }
   /**
    * return true if the zigbee devices battery level is low 
    * @param {*voltage} voltage 
    */
   isBatteryLow(voltage) {
-    return isNaN(voltage) ? true : (voltage > 2800 ? true : false);
+    return isNaN(voltage) ? true : (voltage > 2800 ? false : true);
   }
   /**
    * return the devices battery level in homekit
    * @param {*} voltage 
    */
   getBatteryLevel(voltage) {
-    return isNaN(voltage) ? 0 : ((voltage - 2800) / 10);
+    return isNaN(voltage) ? 0 : ((voltage - 2800) / 400 * 100);
   }
   /**
  * setup 
@@ -37,7 +43,7 @@ class Base {
    * @param {*accessories} accessories 
    */
   registerAccessory(accessories) {
-    this.mijia.api.registerPlatformAccessories("homebridge-smarthome", "smarthome", accessories);
+    this.mijia.api.registerPlatformAccessories("homebridge-smarthome", "smarthome-mijia", accessories);
   }
   /**
    * parse msg receive from gateway
