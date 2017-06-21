@@ -320,7 +320,6 @@ class Mijia {
       this.log.error(`can't find gateway sid->${sid}`);
       return;
     }
-    console.log
     let { password, token } = gateway;
     let cipher = crypto.createCipheriv('aes-128-cbc', password, iv);
     let key = cipher.update(token, "ascii", "hex");
