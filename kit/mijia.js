@@ -296,6 +296,7 @@ class Mijia {
     } else {
       let device = this.devices[sid] ? this.devices[sid] : { sid: sid, short_id: short_id, model: model };
       device = Object.assign(device, data);
+      device.last_time = new Date();
       this.devices[sid] = device;
     }
     if (this._devices[model]) {
