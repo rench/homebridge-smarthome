@@ -65,6 +65,7 @@ class MP {
       state = false;
     } else {
       callback(null, this.powered);
+      return;
     }
     lib.on('deviceReady', (dev) => {
       if (this.macBuffer.equals(dev.mac) || dev.host.address == this.config.ip) {
