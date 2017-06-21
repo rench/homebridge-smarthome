@@ -262,7 +262,10 @@ class Mijia {
         }
         break;
       }
-      case 'write_ack':
+      case 'write_ack': {
+        this.log.debug('write_ack ->' + json);
+        break;
+      }
       case 'read_ack':
       case 'report': {
         this.parseDevice(json, rinfo);
