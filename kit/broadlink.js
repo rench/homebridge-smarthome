@@ -63,9 +63,10 @@ class Broadlink {
               let deviceCfg = Object.assign({}, device);
               deviceCfg.name = name + '@' + i;
               mp.init(deviceCfg);
+              this.log.debug('init broadlink mp device ->' + deviceCfg.name);
             }
           } else {
-            this.log.warn('unsupported device ' + util.inspect(device));
+            this.log.warn('unsupported broadlink device ' + util.inspect(device));
           }
         });
       }

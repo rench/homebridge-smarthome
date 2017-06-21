@@ -405,18 +405,6 @@ device.prototype.mp1 = function () {
   this.on("payload", (err, payload) => {
     var param = payload[0];
     switch (param) {
-      case 1:
-        console.log("case 1 -");
-        break;
-      case 2:
-        console.log("case 2 -");
-        break;
-      case 3:
-        console.log("case 3 -");
-        break;
-      case 4:
-        console.log("case 4 -");
-        break;
       case 14:
         var s1 = Boolean(payload[0x0e] & 0x01);
         var s2 = Boolean(payload[0x0e] & 0x02);
@@ -425,7 +413,6 @@ device.prototype.mp1 = function () {
         this.emit("mp_power", [s1, s2, s3, s4]);
         break;
       default:
-        console.log("case default - " + param);
         break;
     }
   });
@@ -471,18 +458,6 @@ device.prototype.mp2 = function () {
   this.on("payload", (err, payload) => {
     var param = payload[0];
     switch (param) {
-      case 1:
-        console.log("case 1 -");
-        break;
-      case 2:
-        console.log("case 2 -");
-        break;
-      case 3:
-        console.log("case 3 -");
-        break;
-      case 4:
-        console.log("case 4 -");
-        break;
       case 0x1b:
         var s1 = Boolean(payload[0x0e] & 0x01);
         var s2 = Boolean(payload[0x0e] & 0x02);
@@ -491,7 +466,6 @@ device.prototype.mp2 = function () {
         this.emit("mp_power", [s1, s2, s3, s4]);
         break;
       default:
-        console.log("case default - " + param);
         break;
     }
   });
@@ -535,12 +509,6 @@ device.prototype.sp2 = function () {
         var pwr = Boolean(payload[0x4]);
         this.emit("power", pwr);
         break;
-      case 3:
-        console.log('case 3');
-        break;
-      case 4:
-        console.log('case 4');
-        break;
     }
 
   });
@@ -554,87 +522,12 @@ device.prototype.a1 = function () {
     var packet = Buffer.alloc(16, 0);
     packet[0] = 1;
     this.sendPacket(0x6a, packet);
-    /*
-       err = response[0x22] | (response[0x23] << 8);
-       if(err == 0){
-       data = {};
-       aes = AES.new(bytes(this.key), AES.MODE_CBC, bytes(self.iv));
-       payload = aes.decrypt(bytes(response[0x38:]));
-       if(type(payload[0x4]) == int){
-       data['temperature'] = (payload[0x4] * 10 + payload[0x5]) / 10.0;
-       data['humidity'] = (payload[0x6] * 10 + payload[0x7]) / 10.0;
-       light = payload[0x8];
-       air_quality = payload[0x0a];
-       noise = payload[0xc];
-       }else{
-       data['temperature'] = (ord(payload[0x4]) * 10 + ord(payload[0x5])) / 10.0;
-       data['humidity'] = (ord(payload[0x6]) * 10 + ord(payload[0x7])) / 10.0;
-       light = ord(payload[0x8]);
-       air_quality = ord(payload[0x0a]);
-       noise = ord(payload[0xc]);
-       }
-       if(light == 0){
-       data['light'] = 'dark';
-       }else if(light == 1){
-       data['light'] = 'dim';
-       }else if(light == 2){
-       data['light'] = 'normal';
-       }else if(light == 3){
-       data['light'] = 'bright';
-       }else{
-       data['light'] = 'unknown';
-       }
-       if(air_quality == 0){
-       data['air_quality'] = 'excellent';
-       }else if(air_quality == 1){
-       data['air_quality'] = 'good';
-       }else if(air_quality == 2){
-       data['air_quality'] = 'normal';
-       }else if(air_quality == 3){
-       data['air_quality'] = 'bad';
-       }else{
-       data['air_quality'] = 'unknown';
-       }
-       if(noise == 0){
-       data['noise'] = 'quiet';
-       }else if(noise == 1){
-       data['noise'] = 'normal';
-       }else if(noise == 2){
-       data['noise'] = 'noisy';
-       }else{
-       data['noise'] = 'unknown';
-       }
-       return data;
-       }
-       */
   }
 
   this.check_sensors_raw = function () {
     var packet = Buffer.alloc(16, 0);
     packet[0] = 1;
     this.sendPacket(0x6a, packet);
-    /*
-       err = response[0x22] | (response[0x23] << 8);
-       if(err == 0){
-       data = {};
-       aes = AES.new(bytes(this.key), AES.MODE_CBC, bytes(self.iv));
-       payload = aes.decrypt(bytes(response[0x38:]));
-       if(type(payload[0x4]) == int){
-       data['temperature'] = (payload[0x4] * 10 + payload[0x5]) / 10.0;
-       data['humidity'] = (payload[0x6] * 10 + payload[0x7]) / 10.0;
-       data['light'] = payload[0x8];
-       data['air_quality'] = payload[0x0a];
-       data['noise'] = payload[0xc];
-       }else{
-       data['temperature'] = (ord(payload[0x4]) * 10 + ord(payload[0x5])) / 10.0;
-       data['humidity'] = (ord(payload[0x6]) * 10 + ord(payload[0x7])) / 10.0;
-       data['light'] = ord(payload[0x8]);
-       data['air_quality'] = ord(payload[0x0a]);
-       data['noise'] = ord(payload[0xc]);
-       }
-       return data;
-       }
-       */
   }
 }
 
@@ -676,10 +569,6 @@ device.prototype.rm = function () {
         var data = Buffer.alloc(payload.length - 4, 0);
         payload.copy(data, 0, 4);
         this.emit("rawData", data);
-        break;
-      case 3:
-        break;
-      case 4:
         break;
     }
   });
