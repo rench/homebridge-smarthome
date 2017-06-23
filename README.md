@@ -48,14 +48,15 @@ Thanks for
 11. Smoke(SmokeSensor)
 12. Natgas(SmokeSensor)
 13. Curtain(WindowCovering)
+14. AirPurifier(AirPurifier/AirQualitySensor/TemperatureSensor/HumiditySensor/Lightbulb)
 
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP2.jpg)
 
 ### Supported Devices
-1. MP1
-2. MP2
+1. MP1(Outlet)
+2. MP2(Outlet)
 
 
 ## Pre-Requirements
