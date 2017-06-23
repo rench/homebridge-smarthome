@@ -44,6 +44,8 @@ class Mijia {
       this.initConfig(config);
       //init device parsers
       this.loadDevices();
+      //discover wifi device
+      this.discoverWifiDevice();
     }).catch((err) => {
       this.log.error('Mijia init upd socket error->%s', err);
     });
@@ -81,7 +83,7 @@ class Mijia {
     });
     if (devices && devices.length > 0) { //for wifi devices
       devices.map((device) => {
-        this.devices[device.name] = device;
+        this.devices[device.sid] = device;
       });
     }
     this.log.debug('initConfig done');
@@ -144,6 +146,18 @@ class Mijia {
     if (!this.accessories[accessory.UUID]) {
       this.accessories[accessory.UUID] = accessory;
     }
+  }
+
+  /**
+ * discover wifi deivce 
+ */
+  discoverWifiDevice() {
+    this.devices.map((value, idx) => {
+      if (val) {
+        let { type, model } = value;
+
+      }
+    })
   }
   /**
    * discover zigbee deivce via gateway
