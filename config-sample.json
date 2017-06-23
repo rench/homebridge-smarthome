@@ -20,10 +20,8 @@
         ],
         "devices": [
           {
-            "sid": "nothing",
+            "sid": "Air Purifier 001",
             "name": "Air Purifier",
-            "ip": "IP_ADDRESS IF PRESENT",
-            "token": "TOKEN IF PRESENT",
             "type": "wifi",
             "model": "air-purifier"
           },

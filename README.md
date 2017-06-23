@@ -91,8 +91,6 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
           {
             "sid": "Air Purifier 001",
             "name": "Air Purifier",
-            "ip": "IP_ADDRESS IF PRESENT",
-            "token": "TOKEN IF PRESENT",
             "type": "wifi",
             "model": "air-purifier"
           },
@@ -127,7 +125,19 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
 homebridge -D  
 
 ## Version Logs 
+### 1.0.2
+1. `mijia` magnet sensor accessory.
+2. `mijia` ctrln1/ctrln2 switch accessory.
+3. `mijia` ctrlneutral1/ctrlneutral2 switch accessory.
+4. `mijia` monitor sensor accessory.
+5. `mijia` plug/86plug plug accessory.
+6. `mijia` 86sw1/86sw2 switch accessory.
+7. `mijia` switch accessory.
+8. `mijia` smoke sensor accessory.
+9. `mijia` natgas sensor accessory.
+10. `mijia` air-purifier accessory.
+11. `broadlink` mp1/mp2 plug accessory.
 ### 1.0.1
-1. mijia gateway sensor accessory.
-2. mijia door and window sensor accessory.
-3. mijia temperature and humidity sensor accessory.
+1. `mijia` gateway sensor accessory.
+2. `mijia` door and window sensor accessory.
+3. `mijia` temperature and humidity sensor accessory.
