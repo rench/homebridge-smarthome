@@ -10,6 +10,7 @@ Thanks for
 
 ## Mijia Accessory for homebridge.   
 
+### Zigbee
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Gateway.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/ContactSensor.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/MotionSensor.jpg)
@@ -27,6 +28,11 @@ Thanks for
 ![](http://7fv93h.com1.z0.glb.clouddn.com/SmokeDetector.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/NatgasDetector.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/ElectricCurtain.jpg)
+
+### Wifi
+![](http://7fv93h.com1.z0.glb.clouddn.com/AirPurifier.jpg)
+![](http://7fv93h.com1.z0.glb.clouddn.com/MiCamera.jpg)
+![](http://7fv93h.com1.z0.glb.clouddn.com/MiRobotVacuum.jpg)
 
 ### Supported Devices
 1. Gateway(LightSensor/Lightbulb[hue])
