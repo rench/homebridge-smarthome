@@ -1,6 +1,6 @@
 const Base = require('./base');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
-class Contact extends Base {
+class Magnet extends Base {
   constructor(mijia) {
     super(mijia);
     PlatformAccessory = mijia.PlatformAccessory;
@@ -49,6 +49,8 @@ class Contact extends Base {
       service = accessory.getService(Service.ContactSensor);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'magnet';
     if (status == 'closed') {
       service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_DETECTED);
     } else {
@@ -62,4 +64,4 @@ class Contact extends Base {
     return accessory;
   }
 }
-module.exports = Contact;
+module.exports = Magnet;

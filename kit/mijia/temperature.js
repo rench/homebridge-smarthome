@@ -49,6 +49,8 @@ class Temperature extends Base {
       service = accessory.getService(Service.TemperatureSensor);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'sensor_ht';
     if (temperature != undefined) {
       service.getCharacteristic(Characteristic.CurrentTemperature).updateValue(temperature / 100);
     }

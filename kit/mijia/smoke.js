@@ -49,6 +49,8 @@ class Smoke extends Base {
       service = accessory.getService(Service.SmokeSensor);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'smoke';
     if (alarm == 0) { // 0:Release alarm
       service.getCharacteristic(Characteristic.SmokeDetected).updateValue(false);
       service.getCharacteristic(Characteristic.StatusActive).updateValue(true);

@@ -53,6 +53,8 @@ class Gateway extends Base {
       service = accessory.getService(Service.LightSensor);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'gateway';
     service.getCharacteristic(Characteristic.CurrentAmbientLightLevel).updateValue(illumination);
     if (!this.mijia.accessories[uuid]) {
       this.mijia.accessories[uuid] = accessory;
@@ -89,9 +91,8 @@ class Gateway extends Base {
       service = accessory.getService(Service.Lightbulb);
     }
     accessory.reachable = true;
-    if (!accessory.context) {
-      accessory.context = {};
-    }
+    accessory.context.sid = sid;
+    accessory.context.model = 'gateway';
     //update Characteristics
     let brightness = (rgb & 0xFF000000) >>> 24;
     let red = (rgb & 0x00FF0000) >>> 16;

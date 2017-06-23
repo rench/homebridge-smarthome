@@ -51,6 +51,8 @@ class Plug86 extends Base {
       service = accessory.getService(Service.Outlet);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = '86plug';
     let use_state = false, on_state = false;
     if (status == 'on') {
       on_state = true;

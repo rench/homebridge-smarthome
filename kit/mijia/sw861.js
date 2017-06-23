@@ -49,6 +49,8 @@ class SW861 extends Base {
       service = accessory.getService(Service.StatelessProgrammableSwitch);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = '86sw1';
     if (channel != undefined) {
       var event = service.getCharacteristic(Characteristic.ProgrammableSwitchEvent);
       if (status == 'click') {

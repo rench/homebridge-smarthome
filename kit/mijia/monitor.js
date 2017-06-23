@@ -49,6 +49,8 @@ class Monitor extends Base {
       service = accessory.getService(Service.MotionSensor);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'monitor';
     if (status != undefined) {
       service.getCharacteristic(Characteristic.MotionDetected).updateValue('motion' == status);
     }

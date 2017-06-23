@@ -48,6 +48,8 @@ class Curtain extends Base {
       service = accessory.getService(Service.WindowCovering);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'curtain';
     //
     if (curtain_level == undefined) {
       curtain_level = 100;

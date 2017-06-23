@@ -1,7 +1,7 @@
 const Gateway = require('./gateway');
 const Humidity = require('./humidity');
 const Temperature = require('./temperature');
-const Contact = require('./contact');
+const Magnet = require('./magnet');
 const Monitor = require('./monitor');
 const Switch = require('./switch');
 const Plug = require('./plug');
@@ -15,6 +15,8 @@ const Plug86 = require('./plug86');
 const Natgas = require('./natgas');
 const Smoke = require('./smoke');
 const Curtain = require('./curtain');
+//wifi device
+const AirPurifier = require('./airpurifier');
 module.exports = (mijia) => {
   let devices = {};
   devices.gateway = new Gateway(mijia);
@@ -26,7 +28,7 @@ module.exports = (mijia) => {
       temperature.parseMsg(json, rinfo);
     }
   };
-  devices.magnet = new Contact(mijia);
+  devices.magnet = new Magnet(mijia);
   devices.monitor = new Monitor(mijia);
   devices.switch = new Switch(mijia);
   devices.plug = new Plug(mijia);
@@ -40,5 +42,9 @@ module.exports = (mijia) => {
   devices.natgas = new Natgas(mijia);
   devices.smoke = new Smoke(mijia);
   devices.curtain = new Curtain(mijia);
+  // wifi device
+  devices['air-purifier'] = (mijia, config) => {
+    new AirPurifier(mijia, config);
+  };
   return devices;
 };

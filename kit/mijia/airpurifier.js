@@ -14,7 +14,7 @@ class AirPurifier extends Base {
     UUIDGen = mijia.UUIDGen;
     this.discover();
   }
-  setFan(reg, device) {
+  setAirPurifier(reg, device) {
     let sid = reg.id;
     let uuid = UUIDGen.generate('Mijia-AirPurifier@' + sid)
     let accessory = this.mijia.accessories[uuid];
@@ -48,6 +48,7 @@ class AirPurifier extends Base {
     }
     accessory.reachable = true;
     accessory.context.sid = sid;
+    accessory.context.model = this.model;
     //bind
     let setter = service_air.getCharacteristic(Characteristic.Active).listeners('set');
     if (!setter || setter.length == 0) {
@@ -266,7 +267,8 @@ class AirPurifier extends Base {
   }
 
   discover() {
-    var browser = miio.browser(); //require a new browser
+    this.mijia.log.debug('try to discover ' + this.model);
+    let browser = miio.browse(); //require a new browse
     browser.on('available', (reg) => {
       if (!reg.token) { //airpurifier support Auto-token
         return;
@@ -276,8 +278,8 @@ class AirPurifier extends Base {
           return;
         }
         this.devices[reg.id] = device;
-        this.mijia.log.debug('find air-purifier with hostname->%s id->%s from %s:%s.', reg.hostname, device.id, device.address, device.port);
-        this.setFan(reg, device);
+        this.mijia.log.debug('find air-purifier with hostname->%s id->%s @ %s:%s.', reg.hostname, device.id, device.address, device.port);
+        this.setAirPurifier(reg, device);
       });
     });
 
@@ -294,4 +296,4 @@ class AirPurifier extends Base {
 
 }
 
-module.exports = Base;
+module.exports = AirPurifier;

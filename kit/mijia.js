@@ -29,8 +29,9 @@ class Mijia {
     //init properties
     this.gateways = {};
     this.accessories = {};
+    //device object
     this.devices = {};
-    //supported devices
+    //supported device parser
     this._devices = {};
     if (api) {
       // Save the API object as plugin needs to register new accessory via this object.
@@ -47,7 +48,7 @@ class Mijia {
       //discover wifi device
       this.discoverWifiDevice();
     }).catch((err) => {
-      this.log.error('Mijia init upd socket error->%s', err);
+      this.log.error('mijia init upd socket error->%s', err);
     });
     if (this.api) {
       this.api.on('didFinishLaunching', this.didFinishLaunching.bind(this));
@@ -55,7 +56,7 @@ class Mijia {
     if (_homebridge.mijia != undefined) {
       _homebridge.mijia = this;
     }
-    this.log.debug('Mijia constructor done');
+    this.log.debug('mijia constructor done');
   }
   /**
    * static method to export hap properties
@@ -83,7 +84,13 @@ class Mijia {
     });
     if (devices && devices.length > 0) { //for wifi devices
       devices.map((device) => {
-        this.devices[device.sid] = device;
+        if (device.sid != undefined) {
+          this.devices[device.sid] = device;
+        } else if (device.name != undefined) {
+          this.devices[device.name] = device;
+        } else {
+          this.log.warn('device do not have sid or name,will discard to register');
+        }
       });
     }
     this.log.debug('initConfig done');
@@ -106,9 +113,9 @@ class Mijia {
         reject(error);
       });
       this.udpScoket.on('listening', () => {
-        this.log.debug("Mijia upd server is listening on port 9898");
+        this.log.debug("mijia upd server is listening on port 9898");
         this.udpScoket.addMembership(multicastIp);
-        this.log.debug("Mijia add multicast to %s", multicastIp);
+        this.log.debug("mijia add multicast to %s", multicastIp);
         resolve();
       });
       this.udpScoket.bind(udpPort);
@@ -152,12 +159,19 @@ class Mijia {
  * discover wifi deivce 
  */
   discoverWifiDevice() {
-    this.devices.map((value, idx) => {
-      if (val) {
-        let { type, model } = value;
-
+    for (let key in this.devices) {
+      let device = this.devices[key];
+      let { type, model } = device;
+      if (type == 'wifi') {
+        if (this._devices[model]) {
+          this._devices[model](this, device);
+          this.log.debug('construct wifi device->%s', util.inspect(device));
+        } else {
+          this.log.warn('not support device->%s', util.inspect(device));
+        }
       }
-    })
+    }
+    this.log.debug('discoverWifiDevice done');
   }
   /**
    * discover zigbee deivce via gateway

@@ -47,6 +47,8 @@ class CtrlLN1 extends Base {
       service = accessory.getService(Service.Switch);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'ctrl_ln1';
     if (channel != undefined) {
       var event = service.getCharacteristic(Characteristic.On);
       if (channel == 'on') {

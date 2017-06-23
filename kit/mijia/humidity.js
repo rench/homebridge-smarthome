@@ -49,6 +49,8 @@ class Humidity extends Base {
       service = accessory.getService(Service.HumiditySensor);
     }
     accessory.reachable = true;
+    accessory.context.sid = sid;
+    accessory.context.model = 'sensor_ht';
     if (humidity != undefined) {
       service.getCharacteristic(Characteristic.CurrentRelativeHumidity).updateValue(humidity / 100);
     }
