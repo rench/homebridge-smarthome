@@ -29,7 +29,7 @@ module.exports = (mijia) => {
     }
   };
   devices.magnet = new Magnet(mijia);
-  devices.monitor = new Monitor(mijia);
+  devices.motion = new Monitor(mijia);
   devices.switch = new Switch(mijia);
   devices.plug = new Plug(mijia);
   devices.ctrl_neutral1 = new CtrlNeutral1(mijia);
