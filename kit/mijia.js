@@ -181,6 +181,9 @@ class Mijia {
   discoverZigbeeDevice(ip, port) {
     let cmd_get_id_list = { cmd: 'get_id_list' };
     this.sendMsg(cmd_get_id_list, ip, port);
+    setInterval(() => {
+      this.sendMsg(cmd_get_id_list, ip, port);
+    }, 300000); //300s->5m
   }
 
   /**
@@ -291,7 +294,7 @@ class Mijia {
         break;
       }
       case 'write_ack': {
-        this.log.debug('write_ack ->' + json);
+        this.log.debug('write_ack ->%s', util.inspect(json));
         break;
       }
       case 'read_ack':

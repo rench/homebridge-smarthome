@@ -65,6 +65,13 @@ class Base {
   registerAccessory(accessories) {
     this.mijia.api.registerPlatformAccessories("homebridge-smarthome", "smarthome-mijia", accessories);
   }
+    /**
+   * unregistry accessories to homekit
+   * @param {*accessories} accessories 
+   */
+  unregisterAccessory(accessories) {
+    this.mijia.api.unregisterPlatformAccessories("homebridge-smarthome", "smarthome-mijia", accessories);
+  }
   /**
    * parse msg receive from gateway
    * @param {*} msg 

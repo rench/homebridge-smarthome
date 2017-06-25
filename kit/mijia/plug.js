@@ -34,6 +34,12 @@ class Plug extends Base {
     let uuid = UUIDGen.generate('Mijia-Plug@' + sid);
     let accessory = this.mijia.accessories[uuid];
     let service;
+    if (status == 'unknown' && accessory != undefined) {
+      this.unregisterAccessory([accessory]);
+      delete this.mijia.accessories[uuid];
+      this.mijia.log.warn('plug status unknown,unregisterAccessory ->%s', sid);
+      return;
+    }
     if (!accessory) {
       //init a new homekit accessory
       let name = sid.substring(sid.length - 4);
