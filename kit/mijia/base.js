@@ -39,6 +39,26 @@ class Base {
     }
   }
   /**
+  * setup 
+  * @param {*device id} sid 
+  * @param {*device batteryLevel} batteryLevel 
+  * @param {*device isBatteryLow} isBatteryLow 
+  * @param {*device chargingState} chargingState 
+  * @param {*device homekit accessory} accessory 
+  */
+  setBatteryServiceV2(sid, batteryLevel, isBatteryLow, chargingState, accessory) {
+    let service = accessory.getService(Service.BatteryService);
+    if (batteryLevel != undefined) {
+      service.getCharacteristic(Characteristic.BatteryLevel).updateValue(batteryLevel);
+    }
+    if (isBatteryLow != undefined) {
+      service.getCharacteristic(Characteristic.StatusLowBattery).updateValue(isBatteryLow);
+    }
+    if (chargingState != undefined) {
+      service.getCharacteristic(Characteristic.ChargingState).updateValue(chargingState);
+    }
+  }
+  /**
    * registry accessories to homekit
    * @param {*accessories} accessories 
    */

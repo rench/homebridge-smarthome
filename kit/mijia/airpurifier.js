@@ -21,7 +21,7 @@ class AirPurifier extends Base {
     let service_air, service_air_sensor, service_temperature, service_humidity, service_led;
     if (!accessory) {
       let name = sid;
-      accessory = new PlatformAccessory(name, uuid, Accessory.Categories.FAN);
+      accessory = new PlatformAccessory(name, uuid, Accessory.Categories.AirPurifier);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")
         .setCharacteristic(Characteristic.Model, "Mijia AirPurifier")
@@ -154,8 +154,9 @@ class AirPurifier extends Base {
             device.setMode('favorite');
           }
           callback(null, value);
+        } else {
+          callback();
         }
-        callback();
       });
       //service_air_sensor
       service_air_sensor.getCharacteristic(Characteristic.AirQuality).on('get', (callback) => {

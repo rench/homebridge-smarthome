@@ -17,6 +17,9 @@ const Smoke = require('./smoke');
 const Curtain = require('./curtain');
 //wifi device
 const AirPurifier = require('./airpurifier');
+const Vacuum = require('./vacuum');
+const PowerPlug = require('./powerplug');
+const PowerStrip = require('./powerstrip');
 module.exports = (mijia) => {
   let devices = {};
   devices.gateway = new Gateway(mijia);
@@ -45,6 +48,15 @@ module.exports = (mijia) => {
   // wifi device
   devices['air-purifier'] = (mijia, config) => {
     new AirPurifier(mijia, config);
+  };
+  devices['vacuum'] = (mijia, config) => {
+    new Vacuum(mijia, config);
+  };
+  devices['power-plug'] = (mijia, config) => {
+    new PowerPlug(mijia, config);
+  };
+  devices['power-strip'] = (mijia, config) => {
+    new PowerStrip(mijia, config);
   };
   return devices;
 };

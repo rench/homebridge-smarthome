@@ -26,10 +26,22 @@
             "model": "air-purifier"
           },
           {
+            "sid": "Power Plug 001",
+            "name": "Power Plug",
+            "type": "wifi",
+            "model": "power-plug"
+          },
+          {
+            "sid": "Power Strip 001",
+            "name": "Power Strip",
+            "type": "wifi",
+            "model": "power-strip"
+          },
+          {
             "sid": "Vacuum Cleaner 001",
             "name": "Vacuum Cleaner",
-            "ip": "IP_ADDRESS IF PRESENT",
-            "token": "TOKEN IF PRESENT",
+            "ip": "192.168.2.200",
+            "token": "4ac2cd21f3e9272ab21a5c1fd4053ed9",
             "type": "wifi",
             "model": "vacuum"
           }
