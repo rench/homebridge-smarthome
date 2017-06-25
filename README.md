@@ -1,12 +1,15 @@
-# homebridge plugin and webapp for smarthome(mijia、broadlink)
+# homebridge plugin and webapp for smarthome
+## mijia
+## broadlink
 [![npm version](https://badge.fury.io/js/homebridge-smarthome.svg)](https://badge.fury.io/js/homebridge-smarthome)
 
 Thanks for 
 1. [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](https://github.com/snOOrz/homebridge-aqara))
 2. [YinHangCode](https://github.com/YinHangCode/homebridge-mi-aqara)(the author of [homebridge-mi-aqara](https://github.com/YinHangCode/homebridge-mi-aqara))
-3. all other developer and testers.   
+3. [aholstenson](https://github.com/aholstenson/miio)(the author of [miio](https://github.com/aholstenson/miio))
+4. all other developer and testers.   
 
-**Note: I have only a part of these devices, so some devices don't have tested. If you find bugs, please submit them to [issues](https://github.com/rench/homebridge-smarthome/issues).**
+**Note: I have only a part of these devices, some devices do not have been tested. If you find bugs, please submit them to [issues](https://github.com/rench/homebridge-smarthome/issues).**
 
 ## Mijia Accessory for homebridge.   
 
@@ -49,7 +52,9 @@ Thanks for
 12. Natgas(SmokeSensor)
 13. Curtain(WindowCovering)
 14. AirPurifier(AirPurifier/AirQualitySensor/TemperatureSensor/HumiditySensor/Lightbulb)
-
+15. Vacuum(Fan)
+16. PowerPlug(Outlet)
+17. PowerStrip(Outlet)
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP2.jpg)
@@ -73,6 +78,7 @@ If you are using Raspberry Pi, please read [Running-HomeBridge-on-a-Raspberry-Pi
 1. Open Aqara gateway's settings, enable [local network protocol](https://github.com/louisZL/lumi-gateway-local-api).  
 Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in Chinese so you might need a translator to read it.  
 2. To control the devices, put gateway's MAC address (lower case without colon) and password to ~/.homebridge/config.json.  
+3. How to get device ip and token? see [miio](https://github.com/aholstenson/miio/blob/master/docs/protocol.md).
 ```
 {
   "bridge": {
@@ -102,10 +108,22 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
             "model": "air-purifier"
           },
           {
+            "sid": "Power Plug 001",
+            "name": "Power Plug",
+            "type": "wifi",
+            "model": "power-plug"
+          },
+          {
+            "sid": "Power Strip 001",
+            "name": "Power Strip",
+            "type": "wifi",
+            "model": "power-strip"
+          },
+          {
             "sid": "Vacuum Cleaner 001",
             "name": "Vacuum Cleaner",
-            "ip": "IP_ADDRESS IF PRESENT",
-            "token": "TOKEN IF PRESENT",
+            "ip": "192.168.2.200",
+            "token": "4ac2cd21f3e9272ab21a5c1fd4053ed9",
             "type": "wifi",
             "model": "vacuum"
           }
@@ -132,6 +150,12 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
 homebridge -D  
 
 ## Version Logs 
+
+### 1.0.3
+1. `mijia` vacuum accessory.
+2. `mijia` powerplug accessory.
+2. `mijia` powerstrip accessory.
+
 ### 1.0.2
 1. `mijia` magnet sensor accessory.
 2. `mijia` ctrln1/ctrln2 switch accessory.
