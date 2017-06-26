@@ -1,5 +1,5 @@
 const Base = require('./base');
-const colors = require('../../util/colors');
+const color = require('../../util/color');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
 class Gateway extends Base {
   constructor(mijia) {
@@ -102,9 +102,9 @@ class Gateway extends Base {
       service.getCharacteristic(Characteristic.On).updateValue(false);
     } else {
       service.getCharacteristic(Characteristic.On).updateValue(true);
-      let hueColor = colors.rgb_to_hkhue(red, green, blue);
-      let hue = hueColor.hue;
-      let sat = hueColor.sat;
+      let hsv = color.rgb2hsv(red, green, blue);
+      let hue = hsv[0];
+      let sat = hsv[1];
       service.getCharacteristic(Characteristic.Brightness).updateValue(brightness);
       service.getCharacteristic(Characteristic.Hue).updateValue(hue);
       service.getCharacteristic(Characteristic.Saturation).updateValue(sat);
@@ -177,7 +177,7 @@ class Gateway extends Base {
         let lastSaturation = accessory.context.lastSaturation;
         lastSaturation = lastSaturation ? lastSaturation : 100;
         let lastBrightness = (lastRgb & 0xFF000000) >>> 24;
-        let rgbArr = colors.hkhue_to_rgb(value, lastSaturation); //convert hue and sat to rgb value
+        let rgbArr = color.hsv2rgb(value, lastSaturation, lastBrightness); //convert hue and sat to rgb value
         let r = rgbArr[0];
         let g = rgbArr[1];
         let b = rgbArr[2];
