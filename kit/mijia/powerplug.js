@@ -14,8 +14,8 @@ class PowerPlug extends Base {
     UUIDGen = mijia.UUIDGen;
     this.discover();
   }
-  setPowerPlug(config, channel, device) {
-    let sid = config.id;
+  setPowerPlug(reg, channel, device) {
+    let sid = reg.id;
     let model = device.model;
     let uuid = UUIDGen.generate('Mijia-PowerPlug@' + sid)
     let accessory = this.mijia.accessories[uuid];
