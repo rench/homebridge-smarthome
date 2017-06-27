@@ -43,7 +43,7 @@ Thanks for
 ![](http://7fv93h.com1.z0.glb.clouddn.com/MiRobotVacuum.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight2.png)
-![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight3.jpg)
+![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight3.png)
 
 ### Supported Devices
 1. Gateway(LightSensor/Lightbulb[hue])
