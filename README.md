@@ -1,7 +1,13 @@
 # homebridge plugin and webapp for smarthome
-## mijia
-## broadlink
 [![npm version](https://badge.fury.io/js/homebridge-smarthome.svg)](https://badge.fury.io/js/homebridge-smarthome)
+[![npm](https://img.shields.io/npm/dt/homebridge-smarthome.svg)](https://www.npmjs.com/package/homebridge-smarthome) 
+[![npm](https://img.shields.io/npm/v/homebridge-smarthome.svg)](https://www.npmjs.com/package/homebridge-smarthome)
+[![npm package](https://nodei.co/npm/homebridge-smarthome.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/homebridge-smarthome/)
+[![NPM Version](https://img.shields.io/npm/v/homebridge-smarthome.svg)](https://www.npmjs.com/package/homebridge-smarthome)
+[![Dependency Status](https://img.shields.io/versioneye/d/nodejs/homebridge-smarthome.svg)](https://www.versioneye.com/nodejs/homebridge-smarthome/)
+
+
+## mijia & broadlink
 
 Thanks for 
 1. [snOOrz](https://github.com/snOOrz)(the author of [homebridge-aqara](https://github.com/snOOrz/homebridge-aqara))
