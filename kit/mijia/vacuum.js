@@ -165,9 +165,8 @@ class Vacuum extends Base {
         device.destroy();
       }
     }).catch((err) => {
-      device.destroy();
-      this.mijia.log.error(err);
-      throw new Error('unable to initialize robot vacuum->%s', this.config.ip);
+      this.mijia.log.debug(err);
+      this.mijia.log.error('unable to initialize robot vacuum->%s', this.config.ip);
     });
   }
 
