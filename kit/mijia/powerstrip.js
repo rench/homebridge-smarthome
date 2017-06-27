@@ -76,7 +76,7 @@ class PowerStrip extends Base {
           return;
         }
         this.devices[reg.id] = device;
-        this.mijia.log.debug('find power strip with hostname->%s id->%s @ %s:%s.', reg.hostname, device.id, device.address, device.port);
+        this.mijia.log.debug('find model->%s with hostname->%s id->%s  @ %s:%s.', device.model, reg.hostname, device.id, device.address, device.port);
         this.setPowerStrip(reg, 0, device);
       });
     });
@@ -85,7 +85,7 @@ class PowerStrip extends Base {
       if (!reg.token) { // support Auto-token
         return;
       }
-      if (this.devices[reg.id]) {
+      if (this.devices[reg.id] != undefined) {
         this.devices[reg.id].destroy();
         delete this.devices[reg.id];
       }

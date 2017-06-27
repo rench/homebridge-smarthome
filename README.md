@@ -36,12 +36,15 @@ Thanks for
 ![](http://7fv93h.com1.z0.glb.clouddn.com/AirPurifier.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/MiCamera.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/MiRobotVacuum.jpg)
+![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight.jpg)
+![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight2.png)
+![](http://7fv93h.com1.z0.glb.clouddn.com/Yeelight3.jpg)
 
 ### Supported Devices
 1. Gateway(LightSensor/Lightbulb[hue])
 2. ContactSensor(ContactSensor)
 3. TemperatureAndHumiditySensor(HumiditySensor/TemperatureSensor)
-4. MonitorSensor(MonitorSensor)
+4. MotionSensor(MonitorSensor)
 5. Switch(StatelessProgrammableSwitch)
 6. Plug(Outlet)
 7. CtrlNeutral1/CtrlNeutral2(Switch)
@@ -55,6 +58,8 @@ Thanks for
 15. Vacuum(Fan)
 16. PowerPlug(Outlet)
 17. PowerStrip(Outlet)
+18. Yeelight(Lightbulb[hue])
+
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP2.jpg)
@@ -120,6 +125,12 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
             "model": "power-strip"
           },
           {
+            "sid": "Yeelight 001",
+            "name": "Yeelight",
+            "type": "wifi",
+            "model": "light"
+          },
+          {
             "sid": "Vacuum Cleaner 001",
             "name": "Vacuum Cleaner",
             "ip": "192.168.2.200",
@@ -151,16 +162,20 @@ homebridge -D
 
 ## Version Logs 
 
+### 1.0.4
+1. `mijia` yeelight accessory.
+2. `mijia` fix wifi device bug.
+
 ### 1.0.3
 1. `mijia` vacuum accessory.
 2. `mijia` powerplug accessory.
-2. `mijia` powerstrip accessory.
+3. `mijia` powerstrip accessory.
 
 ### 1.0.2
 1. `mijia` magnet sensor accessory.
 2. `mijia` ctrln1/ctrln2 switch accessory.
 3. `mijia` ctrlneutral1/ctrlneutral2 switch accessory.
-4. `mijia` monitor sensor accessory.
+4. `mijia` motion sensor accessory.
 5. `mijia` plug/86plug plug accessory.
 6. `mijia` 86sw1/86sw2 switch accessory.
 7. `mijia` switch accessory.

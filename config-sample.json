@@ -38,6 +38,12 @@
             "model": "power-strip"
           },
           {
+            "sid": "Yeelight 001",
+            "name": "Yeelight",
+            "type": "wifi",
+            "model": "light"
+          },
+          {
             "sid": "Vacuum Cleaner 001",
             "name": "Vacuum Cleaner",
             "ip": "192.168.2.200",

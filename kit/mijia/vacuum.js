@@ -146,31 +146,29 @@ class Vacuum extends Base {
 
   discover() {
     this.mijia.log.debug('try to discover ' + this.model);
-    //create device
-    let device = miio.createDevice({
-      address: this.config.ip,
-      token: this.config.token,
-      model: 'rockrobo.vacuum.v1'
-    });
     if (this.config.sid == undefined) {
       this.config.sid = this.config.ip; //change sid
     }
-    device.init()
-      .then(() => {
-        this.mijia.log.debug('init vacuum done->%s', this.config.ip);
-        this.mijia.log.debug('Battery->%s,State->%s,Fan->%s', device.battery, device.state, device.fanPower);
-        if (device.state != undefined) {
-          this.setVacuum(this.config, device);
-          this.devices[this.config.sid] = device;
-        } else {
-          this.mijia.log.warn('vacuum state undefined, discard to setVacuum');
-          device.destroy();
-        }
-      })
-      .catch((err) => {
-        this.mijia.log.error(err);
-        throw new Error('unable to initialize robot vacuum->%s', this.config.ip);
-      });
+    //create device
+    let device = miio.device({
+      address: this.config.ip,
+      token: this.config.token,
+      model: 'rockrobo.vacuum.v1'
+    }).then(() => {
+      this.mijia.log.debug('init vacuum done->%s', this.config.ip);
+      this.mijia.log.debug('Battery->%s,State->%s,Fan->%s', device.battery, device.state, device.fanPower);
+      if (device.state != undefined) {
+        this.setVacuum(this.config, device);
+        this.devices[this.config.sid] = device;
+      } else {
+        this.mijia.log.warn('vacuum state undefined, discard to setVacuum');
+        device.destroy();
+      }
+    }).catch((err) => {
+      device.destroy();
+      this.mijia.log.error(err);
+      throw new Error('unable to initialize robot vacuum->%s', this.config.ip);
+    });
   }
 
 }
