@@ -2,7 +2,7 @@ const Base = require('./base');
 const color = require('../../util/color');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
 class Yeelight extends Base {
-  constructor(mijia) {
+  constructor(mijia, config) {
     super(mijia);
     this.config = config;
     this.model = config.model;

@@ -20,6 +20,7 @@ const AirPurifier = require('./airpurifier');
 const Vacuum = require('./vacuum');
 const PowerPlug = require('./powerplug');
 const PowerStrip = require('./powerstrip');
+const Yeelight = require('./yeelight');
 module.exports = (mijia) => {
   let devices = {};
   devices.gateway = new Gateway(mijia);
@@ -58,5 +59,8 @@ module.exports = (mijia) => {
   devices['power-strip'] = (mijia, config) => {
     new PowerStrip(mijia, config);
   };
+  devices['light'] = (mijia, config) => {
+    new Yeelight(mijia, config);
+  }
   return devices;
 };
