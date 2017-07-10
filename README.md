@@ -166,6 +166,8 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
 homebridge -D  
 
 ## Version Logs 
+### 1.0.5
+1. `mijia` yeelight accessory(bugfix).
 
 ### 1.0.4
 1. `mijia` yeelight accessory.
