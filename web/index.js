@@ -50,12 +50,6 @@ class WebApp {
       resolve();
     });
   }
-  bind() {
-
-  }
-  start() {
-
-  }
 }
 
 
