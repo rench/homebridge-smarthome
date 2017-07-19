@@ -16,7 +16,7 @@ Thanks for
 
 **Note: I have only a part of these devices, some devices do not have been tested. If you find bugs, please submit them to [issues](https://github.com/rench/homebridge-smarthome/issues).**
 
-## Mijia Accessory for homebridge.   
+## Mijia & Aqara Accessory for homebridge.   
 
 ### Zigbee
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Gateway.jpg)
@@ -66,7 +66,7 @@ Thanks for
 18. Yeelight(Lightbulb[hue])
 19. Aqara Switch(Switch)
 20. Aqara Magent(ContactSensor)
-21. Aqara TemperatureAndHumiditySensorAndPressure(HumiditySensor/TemperatureSensor/CommunityTypes.AtmosphericPressureSensor)
+21. Aqara TemperatureAndHumiditySensorAndPressure(HumiditySensor/TemperatureSensor/`CommunityTypes.AtmosphericPressureSensor`)
 22. Aqara Motion(MotionSensor)
 
 ## Broadlink Accessory for homebridge.
