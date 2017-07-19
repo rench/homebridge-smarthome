@@ -47,9 +47,9 @@ Thanks for
 
 ### Supported Devices
 1. Gateway(LightSensor/Lightbulb[hue])
-2. ContactSensor(ContactSensor)
+2. Magent(ContactSensor)
 3. TemperatureAndHumiditySensor(HumiditySensor/TemperatureSensor)
-4. MotionSensor(MonitorSensor)
+4. Motion(MotionSensor)
 5. Switch(StatelessProgrammableSwitch)
 6. Plug(Outlet)
 7. CtrlNeutral1/CtrlNeutral2(Switch)
@@ -64,6 +64,10 @@ Thanks for
 16. PowerPlug(Outlet)
 17. PowerStrip(Outlet)
 18. Yeelight(Lightbulb[hue])
+19. Aqara Switch(Switch)
+20. Aqara Magent(ContactSensor)
+21. Aqara TemperatureAndHumiditySensorAndPressure(HumiditySensor/TemperatureSensor/CommunityTypes.AtmosphericPressureSensor)
+22. Aqara Motion(MotionSensor)
 
 ## Broadlink Accessory for homebridge.
 ![](http://7fv93h.com1.z0.glb.clouddn.com/Broadlink_MP1.jpg)
@@ -166,6 +170,11 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
 homebridge -D  
 
 ## Version Logs 
+### 1.0.6
+1. `aqara` magnet,motion,switch,temperature-humidity-pressure accessory.
+2. `mijia` change monitor.js->motion.js.
+3. `mijia` update miio.
+
 ### 1.0.5
 1. `mijia` yeelight accessory(bugfix).
 
