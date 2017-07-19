@@ -2,7 +2,7 @@ const Gateway = require('./gateway');
 const Humidity = require('./humidity');
 const Temperature = require('./temperature');
 const Magnet = require('./magnet');
-const Monitor = require('./monitor');
+const Motion = require('./motion');
 const Switch = require('./switch');
 const Plug = require('./plug');
 const CtrlLN1 = require('./ctrlln1');
@@ -15,6 +15,13 @@ const Plug86 = require('./plug86');
 const Natgas = require('./natgas');
 const Smoke = require('./smoke');
 const Curtain = require('./curtain');
+//aqara
+const MotionAq2 = require('./motion.aq2');
+const MagnetAq2 = require('./magnet.aq2');
+const SwitchAq2 = require('./switch.aq2');
+const HumidityV1 = require('./humidity.v1');
+const TemperatureV1 = require('./temperature.v1');
+const PressureV1 = require('./pressure.v1');
 //wifi device
 const AirPurifier = require('./airpurifier');
 const Vacuum = require('./vacuum');
@@ -33,7 +40,7 @@ module.exports = (mijia) => {
     }
   };
   devices.magnet = new Magnet(mijia);
-  devices.motion = new Monitor(mijia);
+  devices.motion = new Motion(mijia);
   devices.switch = new Switch(mijia);
   devices.plug = new Plug(mijia);
   devices.ctrl_neutral1 = new CtrlNeutral1(mijia);
@@ -61,6 +68,19 @@ module.exports = (mijia) => {
   };
   devices['light'] = (mijia, config) => {
     new Yeelight(mijia, config);
+  }
+  //aqara
+  devices['sensor_magnet.aq2'] = new MagnetAq2(mijia);
+  devices['sensor_motion.aq2'] = new MotionAq2(mijia);
+  devices['sensor_switch.aq2'] = new SwitchAq2(mijia);
+  let humidityV1 = new HumidityV1(mijia);
+  let temperatureV1 = new TemperatureV1(mijia);
+  devices['weather.v1'] = {
+    parseMsg: (json, rinfo) => {
+      humidityV1.parseMsg(json, rinfo);
+      temperatureV1.parseMsg(json, rinfo);
+      PressureV1.parseMsg(json, rinfo);
+    }
   }
   return devices;
 };

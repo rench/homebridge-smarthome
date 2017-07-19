@@ -1,6 +1,6 @@
 const Base = require('./base');
-let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
-class Monitor extends Base {
+let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen, CommunityTypes;
+class TemperatureV1 extends Base {
   constructor(mijia) {
     super(mijia);
     PlatformAccessory = mijia.PlatformAccessory;
@@ -8,6 +8,7 @@ class Monitor extends Base {
     Service = mijia.Service;
     Characteristic = mijia.Characteristic;
     UUIDGen = mijia.UUIDGen;
+    CommunityTypes = mijia.CommunityTypes;
   }
   /**
  * parse the gateway json msg
@@ -17,18 +18,20 @@ class Monitor extends Base {
   parseMsg(json, rinfo) {
     let { cmd, model, sid } = json;
     let data = JSON.parse(json.data);
-    let { voltage, status } = data;
-    this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} status->${status}`);
-    this.setMotionSensor(sid, voltage, status)
+    let { voltage, temperature } = data;
+    this.mijia.log.debug(`${model} ${cmd} voltage->${voltage} temperature->${temperature}`);
+    if (temperature != undefined) {
+      this.setTemperatureSensor(sid, voltage, temperature);
+    }
   }
   /**
-   * set up MotionSensor(mijia motion sensor)
+   * set up TemperatureSensor(mijia temperature and humidity sensor)
    * @param {*device id} sid 
    * @param {*device voltage} voltage 
-   * @param {*device status} status 
+   * @param {*device temperature} temperature 
    */
-  setMotionSensor(sid, voltage, status) {
-    let uuid = UUIDGen.generate('Mijia-MotionSensor@' + sid);
+  setTemperatureSensor(sid, voltage, temperature) {
+    let uuid = UUIDGen.generate('Aqara-TemperatureSensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
     let service;
     if (!accessory) {
@@ -36,23 +39,23 @@ class Monitor extends Base {
       let name = sid.substring(sid.length - 4);
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.SENSOR);
       accessory.getService(Service.AccessoryInformation)
-        .setCharacteristic(Characteristic.Manufacturer, "Mijia")
-        .setCharacteristic(Characteristic.Model, "Mijia MotionSensor")
+        .setCharacteristic(Characteristic.Manufacturer, "Aqara")
+        .setCharacteristic(Characteristic.Model, "Aqara TemperatureSensor")
         .setCharacteristic(Characteristic.SerialNumber, sid);
       accessory.on('identify', function (paired, callback) {
         callback();
       });
-      service = new Service.MotionSensor(name);
+      service = new Service.TemperatureSensor(name);
       accessory.addService(service, name);
       accessory.addService(new Service.BatteryService(name), name);
     } else {
-      service = accessory.getService(Service.MotionSensor);
+      service = accessory.getService(Service.TemperatureSensor);
     }
     accessory.reachable = true;
     accessory.context.sid = sid;
-    accessory.context.model = 'monitor';
-    if (status != undefined) {
-      service.getCharacteristic(Characteristic.MotionDetected).updateValue('motion' == status);
+    accessory.context.model = 'weather.v1';
+    if (temperature != undefined) {
+      service.getCharacteristic(Characteristic.CurrentTemperature).updateValue(temperature / 100);
     }
     this.setBatteryService(sid, voltage, accessory);
     if (!this.mijia.accessories[uuid]) {
@@ -62,4 +65,4 @@ class Monitor extends Base {
     return accessory;
   }
 }
-module.exports = Monitor;
+module.exports = TemperatureV1;

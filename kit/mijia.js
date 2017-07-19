@@ -1,4 +1,4 @@
-var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
+var PlatformAccessory, Accessory, Service, Characteristic, UUIDGen, CommunityTypes;
 var _homebridge;
 
 const miio = require('miio');
@@ -7,6 +7,7 @@ const util = require('util');
 const inherits = require('util').inherits;
 const crypto = require('crypto');
 const devices = require('./mijia/');
+const types = require('../util/types');
 const iv = Buffer.from([0x17, 0x99, 0x6d, 0x09, 0x3d, 0x28, 0xdd, 0xb3, 0xba, 0x69, 0x5a, 0x2e, 0x6f, 0x58, 0x56, 0x2e]);
 const multicastIp = '224.0.0.50';
 const multicastPort = 4321;
@@ -22,6 +23,7 @@ class Mijia {
     this.Service = Service;
     this.Characteristic = Characteristic;
     this.UUIDGen = UUIDGen;
+    this.CommunityTypes = CommunityTypes;
     //define
     this.udpScoket = null;
     this.log = log;
@@ -366,6 +368,7 @@ module.exports = (homebridge) => {
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
   UUIDGen = homebridge.hap.uuid;
+  CommunityTypes = types(homebridge);
   _homebridge = homebridge;
   //init mikit
   return Mijia.init(homebridge);
