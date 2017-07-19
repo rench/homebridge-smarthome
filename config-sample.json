@@ -7,10 +7,13 @@
   },
   "platforms": [
     {
-      "platform": "smarthome-mijia",
+      "platform": "smarthome-web",
       "web": {
         "port": 8888
-      },
+      }
+    },
+    {
+      "platform": "smarthome-mijia",
       "mijia": {
         "sids": [
           "34ce0088faed"

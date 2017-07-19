@@ -103,10 +103,13 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
   },
     "platforms": [
     {
-      "platform": "smarthome-mijia",
+      "platform": "smarthome-web",
       "web": {
         "port": 8888
-      },
+      }
+    },
+    {
+      "platform": "smarthome-mijia",
       "mijia": {
         "sids": [
           "34ce0088faed"
