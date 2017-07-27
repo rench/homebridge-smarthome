@@ -24,6 +24,14 @@
   },
   "homepage": "https://github.com/rench/homebridge-smarthome#readme",
   "dependencies": {
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-convert": "^1.2.0",
+    "koa-logger": "^3.0.1",
+    "koa-router": "^7.2.1",
+    "koa-session-minimal": "^3.0.4",
+    "koa-static": "^4.0.1",
+    "koa-views": "^6.0.2",
     "miio": "^0.13.0",
     "winston": "^2.3.1"
   },

@@ -10,7 +10,7 @@ const koaStatic = require('koa-static');
 const bodyParser = require('koa-bodyparser');
 const koaLogger = require('koa-logger');
 const session = require('koa-session-minimal');
-const routers = require('./routers/')
+const routers = require('./routers/');
 const app = new Koa();
 let _homebridge;
 
@@ -39,6 +39,7 @@ class WebApp {
     app.use(views(path.join(__dirname, './views'), { extension: 'ejs' }));
     app.use(routers.routes()).use(routers.allowedMethods());
     app.listen(web.port);
+    this.log.info('webapp is listening at ' + web.port);
   }
   /**
    * static method to export hap properties
