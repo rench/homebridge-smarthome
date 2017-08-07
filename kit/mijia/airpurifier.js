@@ -100,24 +100,6 @@ class AirPurifier extends Base {
         }
       });
 
-      service_air.getCharacteristic(Characteristic.CurrentAirPurifierState).on('get', (callback) => {
-        let device = this.devices[sid];
-        if (device != undefined) {
-          if (!device.power) {
-            callback(null, Characteristic.CurrentAirPurifierState.INACTIVE);
-            return;
-          }
-          //'idle','auto','silent','favorite'
-          if (device.mode == 'auto' || device.mode == 'silent' || device.mode == 'favorite') {
-            callback(null, Characteristic.CurrentAirPurifierState.PURIFYING_AIR);
-          } else if (device.mode == 'idle') {
-            callback(null, Characteristic.CurrentAirPurifierState.IDLE);
-          }
-        } else {
-          callback(null, Characteristic.CurrentAirPurifierState.INACTIVE);
-        }
-      });
-
       service_air.getCharacteristic(Characteristic.RotationSpeed).on('get', (callback) => {
         let device = this.devices[sid];
         if (device != undefined) {
