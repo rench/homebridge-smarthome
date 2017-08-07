@@ -170,6 +170,11 @@ Please follow the steps in this thread: http://bbs.xiaomi.cn/t-13198850. It's in
 homebridge -D  
 
 ## Version Logs 
+
+### 1.0.7
+
+1. `mijia` fix air-purifier accessory(remove some duplicated code).
+
 ### 1.0.6
 1. `aqara` magnet,motion,switch,temperature-humidity-pressure accessory.
 2. `mijia` change monitor.js->motion.js.
