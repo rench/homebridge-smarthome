@@ -171,6 +171,11 @@ homebridge -D
 
 ## Version Logs 
 
+
+### 1.1.0
+
+1. `mijia` fix air-purifier accessory(fix multi callback).
+
 ### 1.0.7
 
 1. `mijia` fix air-purifier accessory(remove some duplicated code).

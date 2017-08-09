@@ -94,6 +94,8 @@ class AirPurifier extends Base {
             callback(null, Characteristic.CurrentAirPurifierState.PURIFYING_AIR);
           } else if (device.mode == 'idle') {
             callback(null, Characteristic.CurrentAirPurifierState.IDLE);
+          } else {
+            callback(null, Characteristic.CurrentAirPurifierState.INACTIVE);
           }
         } else {
           callback(null, Characteristic.CurrentAirPurifierState.INACTIVE);
@@ -115,10 +117,12 @@ class AirPurifier extends Base {
             callback(null, 75);
           } else if (device.mode == 'favorite') {
             callback(null, 100);
+          } else {
+            callback();
           }
+        } else {
           callback();
         }
-        callback();
       }).on('set', (value, callback) => {
         let device = this.devices[sid];
         if (device != undefined) {
