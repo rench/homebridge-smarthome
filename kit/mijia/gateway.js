@@ -103,8 +103,8 @@ class Gateway extends Base {
     } else {
       service.getCharacteristic(Characteristic.On).updateValue(true);
       let hsv = color.rgb2hsv(red, green, blue);
-      let hue = hsv[0];
-      let sat = hsv[1];
+      let hue = parseInt(hsv[0]);
+      let sat = parseInt(hsv[1]);
       service.getCharacteristic(Characteristic.Brightness).updateValue(brightness);
       service.getCharacteristic(Characteristic.Hue).updateValue(hue);
       service.getCharacteristic(Characteristic.Saturation).updateValue(sat);

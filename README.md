@@ -171,6 +171,8 @@ homebridge -D
 
 ## Version Logs 
 
+### 1.1.1
+1. `mijia` fix gateway lighthub.
 
 ### 1.1.0
 
