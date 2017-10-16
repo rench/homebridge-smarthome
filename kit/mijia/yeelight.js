@@ -1,3 +1,4 @@
+const miio = require('miio');
 const Base = require('./base');
 const color = require('../../util/color');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
