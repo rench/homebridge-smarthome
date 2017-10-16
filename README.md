@@ -171,6 +171,9 @@ homebridge -D
 
 ## Version Logs 
 
+### 1.1.2
+1. `mijia` fix yeelight missing miio require.
+
 ### 1.1.1
 1. `mijia` fix gateway lighthub.
 
