@@ -52,9 +52,7 @@ class Motion extends Base {
     accessory.reachable = true;
     accessory.context.sid = sid;
     accessory.context.model = 'motion';
-    if (status != undefined) {
-      service.getCharacteristic(Characteristic.MotionDetected).updateValue('motion' == status);
-    }
+    service.getCharacteristic(Characteristic.MotionDetected).updateValue('motion' === status);
     this.setBatteryService(sid, voltage, accessory);
     if (!this.mijia.accessories[uuid]) {
       this.mijia.accessories[uuid] = accessory;
