@@ -30,7 +30,6 @@ class Magnet extends Base {
   setContactSensor(sid, voltage, status) {
     let uuid = UUIDGen.generate('Mijia-ContactSensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
-    let service;
     let sub = sid.substring(sid.length - 4);
     let name = `Contact ${this.mijia.sensor_names[sub] ? this.mijia.sensor_names[sub] : sub}`
     if (!accessory) {
@@ -43,20 +42,21 @@ class Magnet extends Base {
       accessory.on('identify', function (paired, callback) {
         callback();
       });
-      service = new Service.ContactSensor(name);
-      accessory.addService(service, name);
+      accessory.addService(new Service.ContactSensor(name), name);
       accessory.addService(new Service.BatteryService(name), name);
-    } else {
-      service = accessory.getService(Service.ContactSensor);
     }
     accessory.reachable = true;
     accessory.context.sid = sid;
     accessory.context.model = 'magnet';
-    if (status == 'closed') {
-      service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_DETECTED);
-    } else {
-      service.getCharacteristic(Characteristic.ContactSensorState).updateValue(Characteristic.ContactSensorState.CONTACT_NOT_DETECTED);
+
+    var service = accessory.getService(Service.ContactSensor);
+    if (!service) {
+      service = accessory.addService(new Service.ContactSensor(name), name);
     }
+    
+    service.getCharacteristic(Characteristic.ContactSensorState)
+      .updateValue(status === 'close' ? Characteristic.ContactSensorState.CONTACT_DETECTED : Characteristic.ContactSensorState.CONTACT_NOT_DETECTED)
+
     this.setBatteryService(sid, voltage, accessory);
     if (!this.mijia.accessories[uuid]) {
       this.mijia.accessories[uuid] = accessory;
