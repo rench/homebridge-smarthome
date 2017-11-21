@@ -1,5 +1,6 @@
 const Base = require('./base');
 const miio = require('miio');
+const util = require('util');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
 
 class PowerPlug extends Base {
@@ -40,31 +41,43 @@ class PowerPlug extends Base {
     accessory.reachable = true;
     accessory.context.sid = sid;
     accessory.context.model = this.model;
+
+    //update Characteristics
+    let status = false;
+    if (device != undefined) {
+      if (model == 'chuangmi.plug.v1') {
+        if (channel == 'main') {
+          status = device.on;
+        } else if (channel == 'usb') {
+          status = device.usb_on;
+        }
+      } else {
+        status = device.power(device.powerChannels[channel]);
+      }
+      this.mijia.log.warn(`PLUG ${util.inspect(status)}`)
+      service.getCharacteristic(Characteristic.On).updateValue(status ? status : false);
+
+      device.on('propertyChanged', (e) => {
+        this.mijia.log.warn(`PROPERTY CHANGED ${util.inspect(e)}`)
+        if (e.property === device.powerChannels[channel]) {
+          service.getCharacteristic(Characteristic.On).updateValue(e.value)
+        }
+      })
+    }
+
     //bind
     let setter = service.getCharacteristic(Characteristic.On).listeners('set');
     if (!setter || setter.length == 0) {
-      //service
-      service.getCharacteristic(Characteristic.On).on('get', (callback) => {
+      let log = this.mijia.log
+      service.getCharacteristic(Characteristic.On).on('set', (value, callback) => {
         let device = this.devices[sid];
-        let status = false;
-        if (device != undefined) {
-          if (model == 'chuangmi.plug.v1') {
-            if (channel == 'main') {
-              status = device.on;
-            } else if (channel == 'usb') {
-              status = device.usb_on;
-            }
-          } else {
-            status = device.power;
-          }
+        if (device != undefined && value != undefined) {
+          device.setPower(device.powerChannels[channel], value ? true : false)
+            .catch((e) => {
+              log.error(`SET PLUG ERROR ${e}`)
+            });
         }
-        callback(null, status);
-      }).on('set', (value, callback) => {
-        let device = this.devices[sid];
-        if (device != undefined && value) {
-          device.setPower(channel, value ? true : false);
-        }
-        callback(null, value);
+        callback();
       });
     }
     if (!this.mijia.accessories[uuid]) {
@@ -74,24 +87,29 @@ class PowerPlug extends Base {
   }
 
   discover() {
-    this.mijia.log.debug('try to discover ' + this.model);
     let browser = miio.browse(); //require a new browse
     browser.on('available', (reg) => {
+      if (reg.type != this.model) {
+        return;
+      }
       if (!reg.token) { //power plug support Auto-token
         return;
       }
+      this.mijia.log.warn(`FIND POWER PLUG ${reg.id} - ${reg.address}`)
       miio.device(reg).then((device) => {
         if (device.type != this.model) {
           return;
         }
         this.devices[reg.id] = device;
-        this.mijia.log.debug('find model->%s with hostname->%s id->%s  @ %s:%s.', device.model, reg.hostname, device.id, device.address, device.port);
         if (device.model == 'chuangmi.plug.v1') {
           this.setPowerPlug(reg, 'main', device);
           this.setPowerPlug(reg, 'usb', device);
         } else {
           this.setPowerPlug(reg, 0, device);
         }
+        this.mijia.log.warn(`POWER PLUG CONNECTED ${reg.id} - ${reg.address}`)
+      }).catch((error) => {
+        this.mijia.log.error(`POWER PLUG ERROR ${error}`)
       });
     });
 
