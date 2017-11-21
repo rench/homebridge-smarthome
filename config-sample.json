@@ -18,6 +18,11 @@
         "passwords": [
           "75ED5A235C4A44D4"
         ],
+        "sensor_names": {
+          "2dca": "Stair",
+          "4dca": "Room",
+          "Wifi-device-sid": "Yard"
+        },
         "devices": [
           {
             "sid": "Air Purifier 001",

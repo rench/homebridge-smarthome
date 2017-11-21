@@ -38,7 +38,8 @@ class Gateway extends Base {
     let service;
     if (!accessory) {
       //init a new homekit accessory
-      let name = sid.substring(sid.length - 4);
+      let sub = sid.substring(sid.length - 4);
+      let name = `Luminosity ${this.mijia.sensor_names[sub] ? this.mijia.sensor_names[sub] : sub}`
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.SENSOR);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")
@@ -72,7 +73,8 @@ class Gateway extends Base {
     let service;
     if (!accessory) {
       //init a new homekit accessory
-      let name = sid.substring(sid.length - 4);
+      let sub = sid.substring(sid.length - 4);
+      let name = `Light ${this.mijia.sensor_names[sub] ? this.mijia.sensor_names[sub] : sub}`
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.LIGHTBULB);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")

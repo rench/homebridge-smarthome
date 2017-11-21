@@ -33,7 +33,8 @@ class Motion extends Base {
     let service;
     if (!accessory) {
       //init a new homekit accessory
-      let name = sid.substring(sid.length - 4);
+      let sub = sid.substring(sid.length - 4);
+      let name = `Motion ${this.mijia.sensor_names[sub] ? this.mijia.sensor_names[sub] : sub}`
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.SENSOR);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")

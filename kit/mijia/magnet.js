@@ -31,9 +31,10 @@ class Magnet extends Base {
     let uuid = UUIDGen.generate('Mijia-ContactSensor@' + sid);
     let accessory = this.mijia.accessories[uuid];
     let service;
+    let sub = sid.substring(sid.length - 4);
+    let name = `Contact ${this.mijia.sensor_names[sub] ? this.mijia.sensor_names[sub] : sub}`
     if (!accessory) {
       //init a new homekit accessory
-      let name = sid.substring(sid.length - 4);
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.SENSOR);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")

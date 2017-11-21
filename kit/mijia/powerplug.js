@@ -1,6 +1,7 @@
 const Base = require('./base');
 const miio = require('miio');
 let PlatformAccessory, Accessory, Service, Characteristic, UUIDGen;
+
 class PowerPlug extends Base {
   constructor(mijia, config) {
     super(mijia);
@@ -14,6 +15,7 @@ class PowerPlug extends Base {
     UUIDGen = mijia.UUIDGen;
     this.discover();
   }
+
   setPowerPlug(reg, channel, device) {
     let sid = reg.id;
     let model = device.model;
@@ -21,7 +23,7 @@ class PowerPlug extends Base {
     let accessory = this.mijia.accessories[uuid];
     let service;
     if (!accessory) {
-      let name = sid;
+      let name = `Plug ${this.mijia.sensor_names[sid] ? this.mijia.sensor_names[sid] : sub}`
       accessory = new PlatformAccessory(name, uuid, Accessory.Categories.FAN);
       accessory.getService(Service.AccessoryInformation)
         .setCharacteristic(Characteristic.Manufacturer, "Mijia")
