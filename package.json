@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/rench/homebridge-smarthome#readme",
   "dependencies": {
-    "miio": "^0.13.0",
+    "miio": "^0.14.0",
     "winston": "^2.3.1"
   },
   "engines": {
