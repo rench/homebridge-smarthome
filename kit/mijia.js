@@ -111,7 +111,6 @@ class Mijia {
         reuseAddr: true
       });
       this.udpScoket.on('message', (msg, rinfo) => {
-        this.log.debug('mijia udp socket receive -> %s', new String(msg));
         this.parseMsg(msg, rinfo);
       });
       this.udpScoket.on('error', (err) => {
@@ -242,7 +241,7 @@ class Mijia {
     try {
       json = JSON.parse(msg);
     } catch (ex) {
-      this.log.error('parse json msg failed -> %s', ex);
+      this.log.error(`PARSE failed ${ex} - Mes ${new String(mes)}`);
       return;
     }
     let cmd = json.cmd;
@@ -250,9 +249,10 @@ class Mijia {
       case 'iam': {
         let { ip, port, model } = json;
         if (model == 'gateway') {
+          this.log.debug(`Found gateway @${ip}:${port}`)
           this.discoverZigbeeDevice(ip, port);
         } else {
-          this.log.warn('receive a iam cmd,but model is %s', model);
+          this.log.warn(`Receive [${cmd}] but model is ${model} @${ip}:${port}`);
         }
         break;
       }
@@ -291,6 +291,7 @@ class Mijia {
           this.gateways[sid].token = token;
           this.gateways[sid].last_time = new Date();
         } else {
+          this.log.debug(`[${cmd}]: ${msg}`);
           let device = this.devices[sid] ? this.devices[sid] : { sid: sid, short_id: short_id, type: 'zigbee' };
           device = Object.assign(device, data);
           device.last_time = new Date();
@@ -299,16 +300,17 @@ class Mijia {
         break;
       }
       case 'write_ack': {
-        this.log.debug('write_ack ->%s', util.inspect(json));
+        this.log.debug(`[${cmd}]: ${msg}`);
         break;
       }
       case 'read_ack':
       case 'report': {
+        this.log.debug(`[${cmd}]: ${msg}`);
         this.parseDevice(json, rinfo);
         break;
       }
       default: {
-        this.log.warn('unkonwn cmd:[%s] from getway[%s]', cmd, (rinfo.address + ':' + rinfo.port));
+        this.log.warn(`UNKNOWN [${cmd}] - gateway @${rinfo.address}:${rinfo.port} - ${msg}`);
       }
     }
   }

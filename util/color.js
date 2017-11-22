@@ -39,7 +39,7 @@ function rgb2hex(r, g, b) {
   let len = hex.length;
   if (len < 6) {
     for (i = 0; i < 6 - len; i++) {
-      hex = '0' + hex;
+      hex = "0" + hex;
     }
   }
   return hex.toUpperCase();
@@ -68,7 +68,7 @@ function rgb2hsv(r, g, b) {
   let len = hex.length;
   if (len < 6) {
     for (i = 0; i < 6 - len; i++) {
-      hex = '0' + hex;
+      hex = "0" + hex;
     }
   }
   r /= 255;
@@ -86,8 +86,7 @@ function rgb2hsv(r, g, b) {
   let v = max;
   if (v == 0) {
     s = 0;
-  }
-  else {
+  } else {
     s = diff / v;
   }
   s *= 100;
@@ -122,24 +121,19 @@ function hsv2rgb(h, s, v) {
   if (hh >= 0 && hh < 1) {
     r = C;
     g = X;
-  }
-  else if (hh >= 1 && hh < 2) {
+  } else if (hh >= 1 && hh < 2) {
     r = X;
     g = C;
-  }
-  else if (hh >= 2 && hh < 3) {
+  } else if (hh >= 2 && hh < 3) {
     g = C;
     b = X;
-  }
-  else if (hh >= 3 && hh < 4) {
+  } else if (hh >= 3 && hh < 4) {
     g = X;
     b = C;
-  }
-  else if (hh >= 4 && hh < 5) {
+  } else if (hh >= 4 && hh < 5) {
     r = X;
     b = C;
-  }
-  else {
+  } else {
     r = C;
     b = X;
   }
@@ -158,7 +152,7 @@ function hsv2rgb(h, s, v) {
   len = hex.length;
   if (len < 6) {
     for (i = 0; i < 6 - len; i++) {
-      hex = '0' + hex;
+      hex = "0" + hex;
     }
   }
   return [r, g, b, hex.toUpperCase()];

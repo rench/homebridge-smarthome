@@ -53,6 +53,10 @@ module.exports = (mijia) => {
   devices.natgas = new Natgas(mijia);
   devices.smoke = new Smoke(mijia);
   devices.curtain = new Curtain(mijia);
+
+  devices['light'] = (mijia, config) => {
+    new Yeelight(mijia, config);
+  }
   // wifi device
   devices['air-purifier'] = (mijia, config) => {
     new AirPurifier(mijia, config);
@@ -66,9 +70,6 @@ module.exports = (mijia) => {
   devices['power-strip'] = (mijia, config) => {
     new PowerStrip(mijia, config);
   };
-  devices['light'] = (mijia, config) => {
-    new Yeelight(mijia, config);
-  }
   //aqara
   devices['sensor_magnet.aq2'] = new MagnetAq2(mijia);
   devices['sensor_motion.aq2'] = new MotionAq2(mijia);
