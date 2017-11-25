@@ -31,6 +31,7 @@ class Mijia {
     //init properties
     this.gateways = {};
     this.accessories = {};
+    this.sensor_names = {};
     //device object
     this.devices = {};
     //supported device parser
@@ -75,15 +76,18 @@ class Mijia {
    */
   initConfig(config) {
     let { mijia } = config;
-    let { sids, passwords, devices } = mijia;
+    let { sids, passwords, devices, sensor_names } = mijia;
     if (sids && passwords) {
       if (sids.length != passwords.length) {
         throw new Error('sids length and passwords length must be equal');
       }
     }
     sids.map((sid, index) => {
-      this.gateways[sid] = { password: passwords[index], devices: {} };
+      this.gateways[sid] = { password: passwords[index], devices: {}, last_time: new Date() };
     });
+    if (sensor_names) {
+      this.sensor_names = sensor_names
+    }
     if (devices && devices.length > 0) { //for wifi devices
       devices.map((device) => {
         if (device.sid != undefined) {
@@ -107,7 +111,6 @@ class Mijia {
         reuseAddr: true
       });
       this.udpScoket.on('message', (msg, rinfo) => {
-        this.log.debug('mijia udp socket receive -> %s', new String(msg));
         this.parseMsg(msg, rinfo);
       });
       this.udpScoket.on('error', (err) => {
@@ -167,7 +170,6 @@ class Mijia {
       if (type == 'wifi') {
         if (this._devices[model]) {
           this._devices[model](this, device);
-          this.log.debug('construct wifi device->%s', util.inspect(device));
         } else {
           this.log.warn('not support device->%s', util.inspect(device));
         }
@@ -239,7 +241,7 @@ class Mijia {
     try {
       json = JSON.parse(msg);
     } catch (ex) {
-      this.log.error('parse json msg failed -> %s', ex);
+      this.log.error(`PARSE failed ${ex} - Mes ${new String(mes)}`);
       return;
     }
     let cmd = json.cmd;
@@ -247,9 +249,10 @@ class Mijia {
       case 'iam': {
         let { ip, port, model } = json;
         if (model == 'gateway') {
+          this.log.debug(`Found gateway @${ip}:${port}`)
           this.discoverZigbeeDevice(ip, port);
         } else {
-          this.log.warn('receive a iam cmd,but model is %s', model);
+          this.log.warn(`Receive [${cmd}] but model is ${model} @${ip}:${port}`);
         }
         break;
       }
@@ -257,11 +260,11 @@ class Mijia {
         let { sid, token } = json;
         let data = JSON.parse(json.data);
         let gateway = this.gateways[sid] ? this.gateways[sid] : { sid: sid, model: 'gateway', token: token };
-
         gateway.ip = rinfo.address;
         gateway.port = rinfo.port;
         gateway.token = token;
         gateway.last_time = new Date();
+        gateway.devices = []
 
         let cmd_read = { cmd: 'read', sid: sid };
         this.sendMsg(cmd_read, gateway.ip, gateway.port);
@@ -288,6 +291,7 @@ class Mijia {
           this.gateways[sid].token = token;
           this.gateways[sid].last_time = new Date();
         } else {
+          this.log.debug(`[${cmd}]: ${msg}`);
           let device = this.devices[sid] ? this.devices[sid] : { sid: sid, short_id: short_id, type: 'zigbee' };
           device = Object.assign(device, data);
           device.last_time = new Date();
@@ -296,16 +300,17 @@ class Mijia {
         break;
       }
       case 'write_ack': {
-        this.log.debug('write_ack ->%s', util.inspect(json));
+        this.log.debug(`[${cmd}]: ${msg}`);
         break;
       }
       case 'read_ack':
       case 'report': {
+        this.log.debug(`[${cmd}]: ${msg}`);
         this.parseDevice(json, rinfo);
         break;
       }
       default: {
-        this.log.warn('unkonwn cmd:[%s] from getway[%s]', cmd, (rinfo.address + ':' + rinfo.port));
+        this.log.warn(`UNKNOWN [${cmd}] - gateway @${rinfo.address}:${rinfo.port} - ${msg}`);
       }
     }
   }
@@ -319,21 +324,23 @@ class Mijia {
     let { sid, model, short_id, token } = json;
     let data = JSON.parse(json.data);
     if (model == 'gateway') {
+      let gateway = this.gateways[sid] ? this.gateways[sid] : { sid: sid, model: model };
       if (short_id) {
-        this.gateways[sid].short_id = short_id;
+        gateway.short_id = short_id;
       }
       if (token) {
-        this.gateways[sid].token = token;
+        gateway.token = token;
       }
-      this.gateways[sid].last_time = new Date();
+      gateway.last_time = new Date();
     } else {
       let device = this.devices[sid] ? this.devices[sid] : { sid: sid, short_id: short_id, model: model };
       device = Object.assign(device, data);
       device.last_time = new Date();
       this.devices[sid] = device;
     }
-    if (this._devices[model]) {
-      this._devices[model].parseMsg(json, rinfo);
+    let device = this._devices[model]
+    if (device != undefined) {
+      device.parseMsg(json, rinfo);
     } else {
       this.log.warn('receive report cmd, but no support device found->%s', model);
     }

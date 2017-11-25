@@ -10,9 +10,13 @@ module.exports = homebridge => {
   //every kit will store their devices on context;
   homebridge.context = {};
   //init mijia devices
-  mijia(homebridge);
+  mijia(homebridge).catch(error => {
+    this.log.error('mijia error->%s', err);
+  });
   //init broadlink devices
-  broadlink(homebridge);
+  broadlink(homebridge).catch(error => {
+    this.log.error('broadlink error->%s', err);
+  });
   //init web server
   web(homebridge);
 }
