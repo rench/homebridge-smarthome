@@ -171,6 +171,10 @@ homebridge -D
 
 ## Version Logs 
 
+### 1.1.3
+1. `mijia` fix purifier type error.
+2. `mijia` fix multi getways.
+
 ### 1.1.2
 1. `mijia` fix yeelight missing miio require.
 

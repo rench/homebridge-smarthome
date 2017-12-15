@@ -210,7 +210,7 @@ class AirPurifier extends Base {
         let device = this.devices[sid];
         if (device != undefined) {
           if (!device.power) {
-            callback(null, fasle);
+            callback(null, false);
             return;
           }
           device.setLed(value);
@@ -233,7 +233,7 @@ class AirPurifier extends Base {
         let device = this.devices[sid];
         if (device != undefined) {
           if (!device.power) {
-            callback(null, fasle);
+            callback(null, false);
             return;
           }
           if (value > 50) {

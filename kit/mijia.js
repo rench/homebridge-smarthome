@@ -256,7 +256,7 @@ class Mijia {
       case 'get_id_list_ack': {
         let { sid, token } = json;
         let data = JSON.parse(json.data);
-        let gateway = this.gateways[sid] ? this.gateways[sid] : { sid: sid, model: 'gateway', token: token };
+        let gateway = this.gateways[sid] ? this.gateways[sid] : { sid: sid, model: 'gateway', token: token, devices:{} };
 
         gateway.ip = rinfo.address;
         gateway.port = rinfo.port;
